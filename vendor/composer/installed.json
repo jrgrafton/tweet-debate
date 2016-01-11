@@ -1,0 +1,105 @@
+[
+    {
+        "name": "google/apiclient",
+        "version": "1.1.3",
+        "version_normalized": "1.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/google/google-api-php-client.git",
+            "reference": "523430f21a92c54172099d12d0f31d40f3de67e9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/google/google-api-php-client/zipball/523430f21a92c54172099d12d0f31d40f3de67e9",
+            "reference": "523430f21a92c54172099d12d0f31d40f3de67e9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2015-05-17 00:43:01",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.1.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "description": "Client library for Google APIs",
+        "homepage": "http://developers.google.com/api-client-library/php",
+        "keywords": [
+            "google"
+        ]
+    },
+    {
+        "name": "tomwalder/php-gds",
+        "version": "v2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/tomwalder/php-gds.git",
+            "reference": "b2613fb2f71f70bb9596496cef518953e9a5a6db"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/tomwalder/php-gds/zipball/b2613fb2f71f70bb9596496cef518953e9a5a6db",
+            "reference": "b2613fb2f71f70bb9596496cef518953e9a5a6db",
+            "shasum": ""
+        },
+        "require": {
+            "google/apiclient": "1.1.3",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "google/appengine-php-sdk": ">=1.9.22",
+            "phpunit/phpunit": "~4.0",
+            "satooshi/php-coveralls": "dev-master"
+        },
+        "time": "2015-08-13 10:07:32",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ],
+            "psr-4": {
+                "GDS\\": "src/GDS/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "src/"
+        ],
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Tom Walder",
+                "email": "tom@docnet.nu"
+            }
+        ],
+        "description": "Google Cloud Datastore Library for PHP",
+        "homepage": "https://github.com/tomwalder/php-gds",
+        "keywords": [
+            "appengine",
+            "cloud datastore",
+            "datastore",
+            "gae",
+            "google",
+            "nosql"
+        ]
+    }
+]
