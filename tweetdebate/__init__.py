@@ -1,7 +1,9 @@
-"""
-Initialize Flask app
-"""
 from flask import Flask
-app = Flask(__name__)
+from tweetdebate.views import index
+from tweetdebate.views import tasks
+from tweetdebate.views import errors
 
-import tweetdebate.views
+app = Flask(__name__)
+app.register_blueprint(index.mod)
+app.register_blueprint(tasks.mod)
+app.register_blueprint(errors.mod)

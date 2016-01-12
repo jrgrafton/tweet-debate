@@ -1,0 +1,24 @@
+from flask import Blueprint, render_template
+from tweetdebate.models import Vote
+
+mod = Blueprint('index', __name__)
+
+@mod.route('/')
+def index():
+    """Return index page."""
+    # Insert a new vote
+    questionid = 123
+    userid = "jrgrafton@"
+    vote = True
+
+    # Insert Vote
+    vote = Vote(questionid=questionid,
+                userid=userid,
+                vote=vote)
+    insert_key = vote.put()
+
+    # Retrieve all votes by jrgrafton@
+    votes = Vote.fetchByUser("jrgrafton@").fetch(20)
+
+    # Render template
+    return render_template('/index.html', insert_key=insert_key, votes=votes)
