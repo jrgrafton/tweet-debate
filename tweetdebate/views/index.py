@@ -7,12 +7,12 @@ mod = Blueprint('index', __name__)
 def index():
     """Return index page."""
     # Insert a new vote
-    questionid = 123
+    question_id = 123
     userid = "jrgrafton@"
     vote = True
 
     # Insert Vote
-    vote = Vote(questionid=questionid,
+    vote = Vote(question_id=question_id,
                 userid=userid,
                 vote=vote)
     insert_key = vote.put()

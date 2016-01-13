@@ -10,6 +10,6 @@ class TwitterAPI(TwitterBase):
         TwitterBase.__init__(self)
         self.api = tweepy.API(self.auth)
 
-    def postStatus(self, status):
-        self.api.update_status(status)
+    def update_status(self, status):
+        return self.api.update_status(status)
         

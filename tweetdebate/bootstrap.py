@@ -1,3 +1,7 @@
+import datetime
+import json
+import os
+import logging
 from tweetdebate.models import GameStatus
 from tweetdebate.models import Question
 
@@ -8,19 +12,47 @@ class Bootstrap(object):
     bootstrap_json = None
 
     def __init__(self):
-        game_status = GameStatus.query().get()
-        questions = Question.query().get()
+        self.game_status = GameStatus.query().get()
+        self.questions = Question.query().get()
 
     def activate(self):        
-        if game_status is None or questions is None:
-            data_file = open(os.path.join(__location__, 'bootstrap.json'))  
+        if self.game_status is None or self.questions is None:
+            data_file = open(os.path.join(os.path.dirname(__file__),
+                                          'bootstrap.json'))  
             self.bootstrap_json = json.load(data_file)
-            self.loadQuestions()
-            self.loadGameStatus()
-            logging.info('load_default_game_status: %s' % self.bootstrap_json["gamestatus"]["states"])
+            self.load_questions()
+            self.load_game_status()
     
-    def loadQuestions(self):
-        return
+    def load_questions(self):
+        # Load questions
+        logging.info('load_questions:')
+        questions = self.bootstrap_json["questions"]
+        for question in questions:
+            image = question["image"]
+            question_text = question["question_text"]
+            republican = question["republican"]
+            democrat = question["democrat"]
+            question = Question(
+                image = image,
+                question_text = question_text,
+                republican = republican,
+                democrat = democrat,
+                asked = False)
+            question.put()
     
-    def loadGameStatus(self):
-        return
+    def load_game_status(self):
+        # Load game status
+        logging.info('load_game_status:')
+        states = self.bootstrap_json["gamestatus"]["states"]
+        question_cadence_minutes = \
+            self.bootstrap_json["gamestatus"]["question_cadence_minutes"]
+        last_question_start_time = \
+            datetime.datetime.now() - \
+            datetime.timedelta(minutes=question_cadence_minutes)
+
+        game_status = GameStatus(
+            states = states,
+            question_cadence_minutes = question_cadence_minutes,
+            posted_question_count = 0,
+            last_question_start_time = last_question_start_time)
+        game_status.put()
