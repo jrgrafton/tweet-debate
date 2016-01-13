@@ -18,7 +18,7 @@ def index():
     insert_key = vote.put()
 
     # Retrieve all votes by jrgrafton@
-    votes = Vote.fetchByUser("jrgrafton@").fetch(20)
+    votes = Vote.query_by_user("jrgrafton@").fetch(20)
 
     # Render template
     return render_template('/index.html', insert_key=insert_key, votes=votes)
