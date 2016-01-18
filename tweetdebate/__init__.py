@@ -5,12 +5,14 @@ import os
 from tweetdebate.views import index
 from tweetdebate.views import tasks
 from tweetdebate.views import errors
+from tweetdebate.views import mocks
 from tweetdebate.bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.register_blueprint(index.mod)
 app.register_blueprint(tasks.mod)
 app.register_blueprint(errors.mod)
+app.register_blueprint(mocks.mod)
 
 # Insert default config to Database
 @app.before_first_request

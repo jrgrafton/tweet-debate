@@ -40,7 +40,7 @@ def twitter_post_status():
         #twitter_api = TwitterAPI()
         #twitter_api.update_status(question_text)
 
-        #if game_status.current_question_id is not None:
+        # if game_status.current_question_id is not None:
         # @TODO update StateScore for last question
         # @TODO update History
 
