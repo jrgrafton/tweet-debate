@@ -8,8 +8,10 @@ import unittest
 
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
+from appengine_fixture_loader.loader import load_fixture
 
 from tweetdebate import app
+from tweetdebate.models import Vote
 
 class DemoTestCase(unittest.TestCase):
     def setUp(self):
@@ -30,6 +32,9 @@ class DemoTestCase(unittest.TestCase):
         # Alternatively, you could disable caching by
         # using ndb.get_context().set_cache_policy(False)
         ndb.get_context().clear_cache()
+
+        # Load fixtures
+        loaded_data = load_fixture('tests/votes.json', kind = Vote)
 
     def tearDown(self):
         self.testbed.deactivate()

@@ -15,7 +15,8 @@ class Question(ndb.Model):
         
 class Vote(ndb.Model):
     """Models an individual Vote with question_id, vote, userid, date"""
-    question_id = ndb.KeyProperty(kind=Question)
+    #question_id = ndb.KeyProperty(kind=Question)
+    question_id = ndb.StringProperty()
     userid = ndb.StringProperty()
     vote = ndb.BooleanProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
