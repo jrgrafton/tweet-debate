@@ -22,6 +22,7 @@ class Bootstrap(object):
             self.bootstrap_json = json.load(data_file)
             self.load_questions()
             self.load_game_status()
+            self.load_states()
     
     def load_questions(self):
         # Load questions
@@ -36,23 +37,19 @@ class Bootstrap(object):
                 image = image,
                 question_text = question_text,
                 republican = republican,
-                democrat = democrat,
-                asked = False)
+                democrat = democrat)
             question.put()
     
     def load_game_status(self):
         # Load game status
         logging.info('load_game_status:')
-        states = self.bootstrap_json["gamestatus"]["states"]
         question_cadence_minutes = \
             self.bootstrap_json["gamestatus"]["question_cadence_minutes"]
-        last_question_start_time = \
-            datetime.datetime.now() - \
-            datetime.timedelta(minutes=question_cadence_minutes)
 
         game_status = GameStatus(
-            states = states,
-            question_cadence_minutes = question_cadence_minutes,
-            posted_question_count = 0,
-            last_question_start_time = last_question_start_time)
+            question_cadence_minutes = question_cadence_minutes)
         game_status.put()
+
+    def load_states(self):
+        # @TODO load states
+        return True

@@ -1,8 +1,65 @@
 [
     {
-        "question_id": "0",
-        "userid": "jrgrafton@",
-        "vote": true,
-        "date": "2016-01-01T00:00:00"
+        "__kind__": "Question",
+        "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
+        "republican": false,
+        "democrat": true,
+        "__children__question": [
+            {
+                "__kind__": "Vote",
+                "vote": true,
+                "state": "CA",
+                "date": "2016-01-01T00:00:00",
+                "__children__user": [
+                    {
+                        "userid": "jrg+1@"
+                    }
+                ]      
+            },
+            {
+                "__kind__": "Vote",
+                "vote": false,
+                "state": "CA",
+                "date": "2016-01-01T00:00:00",
+                "__children__user": [
+                    {
+                        "userid": "jrg+2@"
+                    }
+                ]      
+            },
+            {
+                "__kind__": "Vote",
+                "vote": true,
+                "state": "WA",
+                "date": "2016-01-01T00:00:00",
+                "__children__user": [
+                    {
+                        "userid": "jrg+3@"
+                    }
+                ]      
+            },
+            {
+                "__kind__": "Vote",
+                "vote": false,
+                "state": "FL",
+                "date": "2016-01-01T00:00:00",
+                "__children__user": [
+                    {
+                        "userid": "jrg+4@"
+                    }
+                ]      
+            },
+            {
+                "__kind__": "Vote",
+                "vote": false,
+                "state": "NOT_A_STATE",
+                "date": "2016-01-01T00:00:00",
+                "__children__user": [
+                    {
+                        "userid": "jrg+5@"
+                    }
+                ]      
+            }
+        ]
     }
 ]

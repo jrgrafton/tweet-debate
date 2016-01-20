@@ -12,13 +12,13 @@ def index():
     vote = True
 
     # Insert Vote
-    vote = Vote(question_id=question_id,
-                userid=userid,
+    """vote = Vote(question_id=question_id,
+                user=userid,
                 vote=vote)
     insert_key = vote.put()
 
     # Retrieve all votes by jrgrafton@
-    votes = Vote.query_by_user("jrgrafton@").fetch(20)
+    votes = Vote.query_by_user("jrgrafton@")
 
     # Render template
-    return render_template('/index.html', insert_key=insert_key, votes=votes)
+    return render_template('/index.html', insert_key=insert_key, votes=votes)"""

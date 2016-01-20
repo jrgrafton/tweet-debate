@@ -1,18 +1,80 @@
 {
     "gamestatus": {
-        "states": [{"name":"Alabama","abbreviation":"AL"},{"name":"Alaska","abbreviation":"AK"},{"name":"AmericanSamoa","abbreviation":"AS"},{"name":"Arizona","abbreviation":"AZ"},{"name":"Arkansas","abbreviation":"AR"},{"name":"California","abbreviation":"CA"},{"name":"Colorado","abbreviation":"CO"},{"name":"Connecticut","abbreviation":"CT"},{"name":"Delaware","abbreviation":"DE"},{"name":"DistrictOfColumbia","abbreviation":"DC"},{"name":"FederatedStatesOfMicronesia","abbreviation":"FM"},{"name":"Florida","abbreviation":"FL"},{"name":"Georgia","abbreviation":"GA"},{"name":"Guam","abbreviation":"GU"},{"name":"Hawaii","abbreviation":"HI"},{"name":"Idaho","abbreviation":"ID"},{"name":"Illinois","abbreviation":"IL"},{"name":"Indiana","abbreviation":"IN"},{"name":"Iowa","abbreviation":"IA"},{"name":"Kansas","abbreviation":"KS"},{"name":"Kentucky","abbreviation":"KY"},{"name":"Louisiana","abbreviation":"LA"},{"name":"Maine","abbreviation":"ME"},{"name":"MarshallIslands","abbreviation":"MH"},{"name":"Maryland","abbreviation":"MD"},{"name":"Massachusetts","abbreviation":"MA"},{"name":"Michigan","abbreviation":"MI"},{"name":"Minnesota","abbreviation":"MN"},{"name":"Mississippi","abbreviation":"MS"},{"name":"Missouri","abbreviation":"MO"},{"name":"Montana","abbreviation":"MT"},{"name":"Nebraska","abbreviation":"NE"},{"name":"Nevada","abbreviation":"NV"},{"name":"NewHampshire","abbreviation":"NH"},{"name":"NewJersey","abbreviation":"NJ"},{"name":"NewMexico","abbreviation":"NM"},{"name":"NewYork","abbreviation":"NY"},{"name":"NorthCarolina","abbreviation":"NC"},{"name":"NorthDakota","abbreviation":"ND"},{"name":"NorthernMarianaIslands","abbreviation":"MP"},{"name":"Ohio","abbreviation":"OH"},{"name":"Oklahoma","abbreviation":"OK"},{"name":"Oregon","abbreviation":"OR"},{"name":"Palau","abbreviation":"PW"},{"name":"Pennsylvania","abbreviation":"PA"},{"name":"PuertoRico","abbreviation":"PR"},{"name":"RhodeIsland","abbreviation":"RI"},{"name":"SouthCarolina","abbreviation":"SC"},{"name":"SouthDakota","abbreviation":"SD"},{"name":"Tennessee","abbreviation":"TN"},{"name":"Texas","abbreviation":"TX"},{"name":"Utah","abbreviation":"UT"},{"name":"Vermont","abbreviation":"VT"},{"name":"VirginIslands","abbreviation":"VI"},{"name":"Virginia","abbreviation":"VA"},{"name":"Washington","abbreviation":"WA"},{"name":"WestVirginia","abbreviation":"WV"},{"name":"Wisconsin","abbreviation":"WI"},{"name":"Wyoming","abbreviation":"WY"}],
         "question_cadence_minutes": 1
     },
-    "questions": [{
-        "image": null,
-        "question_text": "\"A complete shutdown of #Muslims entering the United States\" - Do you agree with Trump? #yes #no why?",
-        "republican": true,
-        "democrat": false
-    },
-    {
-        "image": null,
-        "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
-        "republican": false,
-        "democrat": true
-    }]
+    "questions": [
+        {
+            "image": null,
+            "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
+            "republican": true,
+            "democrat": false
+        },
+        {
+            "image": null,
+            "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
+            "republican": false,
+            "democrat": true
+        }
+    ],
+    "states": [
+        {"state_name":"Alabama","state_abbreviation":"AL"},
+        {"state_name":"Alaska","state_abbreviation":"AK"},
+        {"state_name":"AmericanSamoa","state_abbreviation":"AS"},
+        {"state_name":"Arizona","state_abbreviation":"AZ"},
+        {"state_name":"Arkansas","state_abbreviation":"AR"},
+        {"state_name":"California","state_abbreviation":"CA"},
+        {"state_name":"Colorado","state_abbreviation":"CO"},
+        {"state_name":"Connecticut","state_abbreviation":"CT"},
+        {"state_name":"Delaware","state_abbreviation":"DE"},
+        {"state_name":"DistrictOfColumbia","state_abbreviation":"DC"},
+        {"state_name":"FederatedStatesOfMicronesia","state_abbreviation":"FM"},
+        {"state_name":"Florida","state_abbreviation":"FL"},
+        {"state_name":"Georgia","state_abbreviation":"GA"},
+        {"state_name":"Guam","state_abbreviation":"GU"},
+        {"state_name":"Hawaii","state_abbreviation":"HI"},
+        {"state_name":"Idaho","state_abbreviation":"ID"},
+        {"state_name":"Illinois","state_abbreviation":"IL"},
+        {"state_name":"Indiana","state_abbreviation":"IN"},
+        {"state_name":"Iowa","state_abbreviation":"IA"},
+        {"state_name":"Kansas","state_abbreviation":"KS"},
+        {"state_name":"Kentucky","state_abbreviation":"KY"},
+        {"state_name":"Louisiana","state_abbreviation":"LA"},
+        {"state_name":"Maine","state_abbreviation":"ME"},
+        {"state_name":"MarshallIslands","state_abbreviation":"MH"},
+        {"state_name":"Maryland","state_abbreviation":"MD"},
+        {"state_name":"Massachusetts","state_abbreviation":"MA"},
+        {"state_name":"Michigan","state_abbreviation":"MI"},
+        {"state_name":"Minnesota","state_abbreviation":"MN"},
+        {"state_name":"Mississippi","state_abbreviation":"MS"},
+        {"state_name":"Missouri","state_abbreviation":"MO"},
+        {"state_name":"Montana","state_abbreviation":"MT"},
+        {"state_name":"Nebraska","state_abbreviation":"NE"},
+        {"state_name":"Nevada","state_abbreviation":"NV"},
+        {"state_name":"NewHampshire","state_abbreviation":"NH"},
+        {"state_name":"NewJersey","state_abbreviation":"NJ"},
+        {"state_name":"NewMexico","state_abbreviation":"NM"},
+        {"state_name":"NewYork","state_abbreviation":"NY"},
+        {"state_name":"NorthCarolina","state_abbreviation":"NC"},
+        {"state_name":"NorthDakota","state_abbreviation":"ND"},
+        {"state_name":"NorthernMarianaIslands","state_abbreviation":"MP"},
+        {"state_name":"Ohio","state_abbreviation":"OH"},
+        {"state_name":"Oklahoma","state_abbreviation":"OK"},
+        {"state_name":"Oregon","state_abbreviation":"OR"},
+        {"state_name":"Palau","state_abbreviation":"PW"},
+        {"state_name":"Pennsylvania","state_abbreviation":"PA"},
+        {"state_name":"PuertoRico","state_abbreviation":"PR"},
+        {"state_name":"RhodeIsland","state_abbreviation":"RI"},
+        {"state_name":"SouthCarolina","state_abbreviation":"SC"},
+        {"state_name":"SouthDakota","state_abbreviation":"SD"},
+        {"state_name":"Tennessee","state_abbreviation":"TN"},
+        {"state_name":"Texas","state_abbreviation":"TX"},
+        {"state_name":"Utah","state_abbreviation":"UT"},
+        {"state_name":"Vermont","state_abbreviation":"VT"},
+        {"state_name":"VirginIslands","state_abbreviation":"VI"},
+        {"state_name":"Virginia","state_abbreviation":"VA"},
+        {"state_name":"Washington","state_abbreviation":"WA"},
+        {"state_name":"WestVirginia","state_abbreviation":"WV"},
+        {"state_name":"Wisconsin","state_abbreviation":"WI"},
+        {"state_name":"Wyoming","state_abbreviation":"WY"}
+    ]
 }
