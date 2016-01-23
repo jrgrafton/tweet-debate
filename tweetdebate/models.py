@@ -1,3 +1,4 @@
+import datetime
 import logging
 from google.appengine.ext import ndb
 
@@ -7,7 +8,6 @@ class Question(ndb.Model):
     question_text = ndb.StringProperty(indexed=False)
     republican = ndb.BooleanProperty(indexed=False)
     democrat = ndb.BooleanProperty(indexed=False)
-    asked = ndb.BooleanProperty(default=False)
     start_time = ndb.DateTimeProperty(auto_now_add=False,
                                       indexed=False)
     end_time = ndb.DateTimeProperty(auto_now_add=False,
@@ -22,6 +22,10 @@ class User(ndb.Model):
     userid = ndb.StringProperty()
     sway_points = ndb.IntegerProperty(default=50) # Default 50 swing points
 
+    @classmethod
+    def query_by_question(cls, question_entity):
+        return cls.query(cls.question==question_entity.key)
+
 class Vote(ndb.Model):
     """Models an individual Vote"""
     question = ndb.KeyProperty(kind=Question)
@@ -35,8 +39,8 @@ class Vote(ndb.Model):
         return cls.query(cls.question==question_entity.key)
 
     @classmethod
-    def query_by_user(cls, user):
-        return cls.query(cls.userid==userid)
+    def query_by_userid(cls, userid):
+        return cls.query(cls.user.get().userid==userid)
 
 class State(ndb.Model):
     """Models an individual state's score"""
@@ -49,11 +53,6 @@ class State(ndb.Model):
     def get_state_score(cls, state_abbreviation):
         return cls.query(cls.state_abbreviation==state_abbreviation).get()
 
-    @classmethod
-    def is_valid_state(cls, state):
-        entity = cls.query(cls.state==state).get()
-        return entity is not None:
-
 class GameStatus(ndb.Model):
     """Models current game status"""
     current_question = ndb.KeyProperty(default=None, 
@@ -61,10 +60,9 @@ class GameStatus(ndb.Model):
                                        indexed=False)
     question_cadence_minutes = ndb.IntegerProperty(indexed=False)
     posted_question_count = ndb.IntegerProperty(default=0, indexed=False)
-    last_question_start_time = 
-            ndb.DateTimeProperty(auto_now_add=False,
-                                 indexed=False,
-                                 default="1970-01-01T00:00:00")
+    last_question_start_time = ndb.DateTimeProperty(auto_now_add=False,
+                                                    indexed=False,
+                                                    default=datetime.datetime.now())
     @classmethod
     def get_game_status(cls):
         return cls.query().get()

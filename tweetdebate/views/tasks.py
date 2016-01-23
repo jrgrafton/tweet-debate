@@ -55,7 +55,7 @@ def __updateStateScore(question_entity):
     state_votes = {}
 
     # Tally individual votes for all states
-    if votes not None:
+    if votes is not None:
         for vote in votes:
             if vote.state not in state_scores:
                 state_votes[vote.state] = {"score_democrat": 0,
@@ -72,7 +72,7 @@ def __updateStateScore(question_entity):
             # Draw adds score of one to each side for a state
             ++state_score_entity.score_democrat
             ++state_score_entity.score_republican
-        else if value["score_democrat"] > value["score_republican"]:
+        elif value["score_democrat"] > value["score_republican"]:
             ++state_score_entity.score_democrat
         else:
             ++state_score_entity.score_republican
