@@ -2,7 +2,6 @@ import random
 
 from flask import Blueprint
 from tweetdebate.models import Vote
-from tweetdebate.models import GameStatus
 
 mod = Blueprint('mocks', __name__)
 

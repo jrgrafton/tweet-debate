@@ -34,7 +34,7 @@ class DemoTestCase(unittest.TestCase):
         ndb.get_context().clear_cache()
 
         # Load fixtures
-        loaded_data = load_fixture('tests/votes.json', kind = Vote)
+        loaded_data = load_fixture('tests/questions.json', kind = Question)
 
     def tearDown(self):
         self.testbed.deactivate()

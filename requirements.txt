@@ -8,3 +8,4 @@ Flask==0.10
 tweepy==3.5.0
 unittest2
 appengine-fixture-loader
+enum34
