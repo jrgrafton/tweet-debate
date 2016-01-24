@@ -19,11 +19,11 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/speech_bubbles.css') }}">
     <style type="text/css">
-      .main_logo {
+      .main-logo {
         width: 20pt;
         height: 20pt;
       }
-      .usa_map {
+      .usa-map {
         width: 65%;
         margin: 0 auto;
       }
@@ -33,28 +33,16 @@
         margin-right: 5pt;
         margin-bottom: 25pt;
       }
-      .candidate {
+      .candidate-avatar {
         width: 60%;
         display: block;
         float: left;
         margin: 0 auto;
       }
-      .bottom_text {
+      .bottom-text {
         margin-top: 25pt;
       }
-      .right_bar {
-        width: 15%;
-        float: right;
-        overflow: hidden;
-        display: block;
-      }
-      .main_content {
-        width: 85%;
-        float: left;
-        overflow: hidden;
-        display: block;
-      }
-      .speech_buuble_text_main {
+      .speech-buuble-text-main {
         font-family: 'Indie Flower', cursive;
         font-size: 20pt;
       }
@@ -71,7 +59,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a href="#" class="navbar-brand">
-                  <img class="main_logo"
+                  <img class="main-logo"
                       src="{{ url_for('static', filename='images/logo.png') }}" alt="Main logo" />
                 </a>
             </div>
@@ -100,19 +88,37 @@
         </div>
     </div>
 
-    <div class="container right_bar">
-      <img class="candidate img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" alt="A candidate" />
-    </div>
-    <div class="container main_content">
-      <divclass="container">
-        <div class="bubble bubble_right speech_buuble_text_main">
-          The threat to our liberty from Wasington has never been greater.
-        </div>
-      </div>
 
-      <img class="usa_map img-responsive" src="{{ url_for('static', filename='images/usa_votes.png') }}" alt="Map of the USA" />
-      <div class="container bottom_text">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.Quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus. Tibulum consectetur scelerisque lacus, ac fermentum lorem convallis sed.</p>
+    <!-- Main dynamic grid, 12 columns. -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Main content. -->
+        <div class="col-md-9">
+          <!-- Top speech bubble for md and lg. -->
+          <div class="visible-md-block visible-lg-block">
+            <div class="bubble bubble-right speech-buuble-text-main">
+              The threat to our liberty from Wasington has never been greater.
+            </div>
+          </div>
+
+          <!-- Avatar and speech bubble for sm and xs. -->
+          <div class="visible-sm-block visible-xs-block">
+            <div class="bubble bubble-bottom-right speech-buuble-text-main">
+              The threat to our liberty from Wasington has never been greater.
+            </div>
+            <img class="candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" alt="A candidate" />
+          </div>
+
+          <img class="usa-map img-responsive" src="{{ url_for('static', filename='images/usa_votes.png') }}" alt="Map of the USA" />
+          <div>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.Quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus. Tibulum consectetur scelerisque lacus, ac fermentum lorem convallis sed.</p>
+          </div>
+        </div>
+
+        <!-- Right bar, hidden on xs and sm. -->
+        <div class="col-md-3 hidden-sm hidden-xs">
+          <img class=" candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" alt="A candidate" />
+        </div>
       </div>
     </div>
 
