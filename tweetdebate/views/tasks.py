@@ -11,7 +11,7 @@ from tweetdebate.tasks.twitter_stream import TwitterStream
 mod = Blueprint('tasks', __name__)
 
 @mod.route("/tasks/twitter_post_status/<int:question_cadence_minutes>")
-def twitter_post_status(question_cadence_minutes):
+def twitter_post_status(question_cadence_minutes, post_to_twitter = True):
     """ Potentially post a new status to Twitter
     """
     next_question = Question.get_next_question()
@@ -19,10 +19,10 @@ def twitter_post_status(question_cadence_minutes):
             and __is_time_for_new_question(question_cadence_minutes):
         current_question = Question.get_current_question()
         
-
-        #twitter_api = TwitterAPI()
-        #twitter_api.update_status(next_question.question_text)
-        #TODO: detect Twitter failures
+        #TODO: detect Twitter failures?
+        if post_to_twitter:
+            twitter_api = TwitterAPI()
+            twitter_api.update_status(next_question.question_text)
 
         if current_question is not None:
             current_question.end_time = datetime.datetime.now()
