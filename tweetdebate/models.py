@@ -19,10 +19,10 @@ class Question(ndb.Model):
     image = ndb.StringProperty(indexed=False)
     question_text = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
-    start_time = ndb.DateTimeProperty(auto_now_add=False,
-                                      indexed=False)
+    start_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     end_time = ndb.DateTimeProperty(auto_now_add=False,
-                                      indexed=False)
+                                      indexed=False,
+                                      default=None)
     state_scores = ndb.LocalStructuredProperty(State, repeated=True)
 
     @classmethod

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# encoding: utf-8
 """
 tests.py
 """
@@ -34,12 +32,15 @@ class DemoTestCase(unittest.TestCase):
         # using ndb.get_context().set_cache_policy(False)
         ndb.get_context().clear_cache()
 
-        # Load fixtures
-        loaded_data = load_fixture('tests/questions.json', 
-                                   kind={'Question': Question,'State': State})
-
     def tearDown(self):
         self.testbed.deactivate()
+
+    def test_model_question(self):
+        # Load fixtures
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+        question_entity = Question.get_next_question()
+        assert question_entity.key.id() == "q1"
 
     def test_404(self):
         rv = self.app.get('/missing')

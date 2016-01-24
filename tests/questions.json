@@ -1,29 +1,19 @@
 [
     {
         "__kind__": "Question",
+        "__id__" : "q1",
         "image": null,
-        "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
-        "party": 0,
-        "__structured_property__state_scores__": [
-            {
-                "__kind__": "State",
-                "state_abbreviation" : "CA",
-                "party_score_votes": [500, 10],
-                "party_score_sway": [20, 30]
-            },
-            {
-                "__kind__": "State",
-                "state_abbreviation" : "WA",
-                "party_score_votes": [20, 40],
-                "party_score_sway": [50, 100]
-            }
-        ]
+        "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
+        "party": 1
     },
     {
         "__kind__": "Question",
+        "__id__" : "q2",
         "image": null,
         "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
         "party": 0,
+        "start_time": "2016-01-23T00:00:00",
+        "end_time": "1999-01-23T06:00:00",
         "__structured_property__state_scores__": [
             {
                 "__kind__": "State",
