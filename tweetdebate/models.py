@@ -10,9 +10,28 @@ class Party(Enum):
 
 class State(ndb.Model):
     """Models an individual state's score"""
-    state_abbreviation = ndb.StringProperty(indexed=False)
+    state_abbreviation = ndb.StringProperty()
     party_score_votes = ndb.IntegerProperty(indexed=False, repeated=True)
     party_score_sway = ndb.IntegerProperty(indexed=False, repeated=True)
+
+    @classmethod
+    def get_state_by_abbreviation(cls, state_abbreviation):
+        return cls.query(cls.state_abbreviation == state_abbreviation).get()
+
+    # Updates state scores based on result of a question
+    @classmethod
+    def update_state_scores(cls, question_state_scores):
+        for question_state_score in question_state_scores:
+            state = cls.query(cls.state_abbreviation == \
+                    question_state_score.state_abbreviation).get()
+            if question_state_score.party_score_votes[0] > \
+                    question_state_score.party_score_votes[1]:
+                state.party_score_votes[0]+=1
+            elif question_state_score.party_score_votes[1] > \
+                    question_state_score.party_score_votes[0]:
+                state.party_score_votes[1]+=1
+            # Ties get no points
+            state.put()
 
 class Question(ndb.Model):
     """Models questions"""
@@ -20,14 +39,26 @@ class Question(ndb.Model):
     question_text = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
     start_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
-    end_time = ndb.DateTimeProperty(auto_now_add=False,
-                                      indexed=False,
-                                      default=None)
+    end_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     state_scores = ndb.LocalStructuredProperty(State, repeated=True)
 
     @classmethod
+    def get_current_question(cls):
+        return cls.query(ndb.AND(
+                           cls.start_time != None,
+                           cls.end_time == None)).get()
+
+    @classmethod
     def get_next_question(cls):
-        return cls.query(cls.start_time==None).get()
+        return cls.query(cls.start_time == None).get()
+
+    @classmethod
+    def get_current_question_start_time(cls):
+        entity = Question.get_current_question()
+        if entity is not None:
+            return entity.start_time
+        else:
+            return None
 
 class Vote(ndb.Model):
     """Models an individual Vote - always associated with user"""

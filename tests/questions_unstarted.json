@@ -1,0 +1,23 @@
+[
+    {
+        "__kind__": "Question",
+        "__id__" : "q1",
+        "image": null,
+        "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
+        "party": 1
+    },
+    {
+        "__kind__": "Question",
+        "__id__" : "q2",
+        "image": null,
+        "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
+        "party": 1
+    },
+    {
+        "__kind__": "Question",
+        "__id__" : "q3",
+        "image": null,
+        "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
+        "party": 0
+    }
+]
