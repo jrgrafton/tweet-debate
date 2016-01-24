@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# encoding: utf-8
 """
 tests.py
 """
@@ -11,7 +9,8 @@ from google.appengine.ext import ndb
 from appengine_fixture_loader.loader import load_fixture
 
 from tweetdebate import app
-from tweetdebate.models import Vote
+from tweetdebate.models import Question
+from tweetdebate.models import State
 
 class DemoTestCase(unittest.TestCase):
     def setUp(self):
@@ -33,11 +32,15 @@ class DemoTestCase(unittest.TestCase):
         # using ndb.get_context().set_cache_policy(False)
         ndb.get_context().clear_cache()
 
-        # Load fixtures
-        loaded_data = load_fixture('tests/votes.json', kind = Vote)
-
     def tearDown(self):
         self.testbed.deactivate()
+
+    def test_model_question(self):
+        # Load fixtures
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+        question_entity = Question.get_next_question()
+        assert question_entity.key.id() == "q1"
 
     def test_404(self):
         rv = self.app.get('/missing')

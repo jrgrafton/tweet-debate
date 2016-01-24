@@ -3,7 +3,6 @@ import time
 import logging
 
 from flask import Blueprint
-from tweetdebate.models import GameStatus
 from tweetdebate.models import Question
 from tweetdebate.models import Vote
 from tweetdebate.tasks.twitter_api import TwitterAPI

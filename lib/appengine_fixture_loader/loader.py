@@ -8,7 +8,6 @@ from datetime import datetime, time, date
 from google.appengine.ext.ndb.model import (DateTimeProperty, DateProperty,
                                             TimeProperty)
 
-
 def _sensible_value(attribute_type, value):
     if type(attribute_type) is DateTimeProperty:
         retval = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
@@ -43,7 +42,6 @@ def load_fixture(filename, kind, post_processor=None):
             objtype = kind[od['__kind__']]
         else:
             objtype = kind
-
         obj_id = od.get('__id__')
         if obj_id is not None:
             obj = objtype(id=obj_id, parent=parent)
@@ -63,6 +61,34 @@ def load_fixture(filename, kind, post_processor=None):
 
         if post_processor:
             post_processor(obj)
+
+        # Look for StructuredProperties
+        for child_attribute_name in [k for k in od.keys()
+                                     if k.startswith(
+                                        '__structured_property__')]:
+            attribute_name = child_attribute_name.split('__')[-2]
+            attribute_value = []
+
+            # For each structured property object for this field
+            structured_properties = od[child_attribute_name]
+            for structured_property in structured_properties:
+                sp_objtype = kind[structured_property['__kind__']]
+                sp_obj = sp_objtype(parent=None)
+
+                # For each key in each structured property object for this field
+                for sp_attribute_name in \
+                                [k for k in structured_property.keys()
+                                if not k.startswith('__')]:
+                    sp_attribute_type = \
+                        sp_objtype.__dict__[sp_attribute_name]
+                    sp_attribute_value = _sensible_value(sp_attribute_type,
+                        structured_property[sp_attribute_name])
+                    sp_obj.__dict__['_values'][sp_attribute_name] = \
+                        sp_attribute_value
+
+                # Add Object to structured property array
+                attribute_value.append(sp_obj)
+            obj.__dict__['_values'][attribute_name] = attribute_value
 
         # Saving obj is required to continue with the children
         obj.put()
