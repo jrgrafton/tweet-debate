@@ -6,17 +6,13 @@ from google.appengine.ext import ndb
 # Integer representations for parties
 class Party(Enum):
     republication = 0
-    democrate = 1
+    democrat = 1
 
 class State(ndb.Model):
     """Models an individual state's score"""
     state_abbreviation = ndb.StringProperty(indexed=False)
     party_score_votes = ndb.IntegerProperty(indexed=False, repeated=True)
     party_score_sway = ndb.IntegerProperty(indexed=False, repeated=True)
-
-    @classmethod
-    def get_state_score(cls, state_abbreviation):
-        return cls.query(cls.state_abbreviation==state_abbreviation).get()
 
 class Question(ndb.Model):
     """Models questions"""

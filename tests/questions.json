@@ -4,16 +4,38 @@
         "image": null,
         "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
         "party": 0,
-        "state_scores": [
+        "__structured_property__state_scores__": [
             {
+                "__kind__": "State",
                 "state_abbreviation" : "CA",
-                "party_score_votes" : [10, 20],
-                "party_score_sway" : [50, 100]
+                "party_score_votes": [500, 10],
+                "party_score_sway": [20, 30]
             },
             {
+                "__kind__": "State",
                 "state_abbreviation" : "WA",
-                "party_score_votes" : [1, 2],
-                "party_score_sway" : [5, 10]
+                "party_score_votes": [20, 40],
+                "party_score_sway": [50, 100]
+            }
+        ]
+    },
+    {
+        "__kind__": "Question",
+        "image": null,
+        "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
+        "party": 0,
+        "__structured_property__state_scores__": [
+            {
+                "__kind__": "State",
+                "state_abbreviation" : "CA",
+                "party_score_votes": [500, 10],
+                "party_score_sway": [20, 30]
+            },
+            {
+                "__kind__": "State",
+                "state_abbreviation" : "WA",
+                "party_score_votes": [20, 40],
+                "party_score_sway": [50, 100]
             }
         ]
     }

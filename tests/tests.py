@@ -11,7 +11,8 @@ from google.appengine.ext import ndb
 from appengine_fixture_loader.loader import load_fixture
 
 from tweetdebate import app
-from tweetdebate.models import Vote
+from tweetdebate.models import Question
+from tweetdebate.models import State
 
 class DemoTestCase(unittest.TestCase):
     def setUp(self):
@@ -34,7 +35,8 @@ class DemoTestCase(unittest.TestCase):
         ndb.get_context().clear_cache()
 
         # Load fixtures
-        loaded_data = load_fixture('tests/questions.json', kind = Question)
+        loaded_data = load_fixture('tests/questions.json', 
+                                   kind={'Question': Question,'State': State})
 
     def tearDown(self):
         self.testbed.deactivate()
