@@ -9,6 +9,9 @@
 
     <!-- Frameworks -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/raphael.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/us_map.js') }}"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
@@ -36,7 +39,6 @@
       .candidate-avatar {
         width: 60%;
         display: block;
-        float: left;
         margin: 0 auto;
       }
       .bottom-text {
@@ -60,7 +62,7 @@
                 </button>
                 <a href="#" class="navbar-brand">
                   <img class="main-logo"
-                      src="{{ url_for('static', filename='images/logo.png') }}" alt="Main logo" />
+                      src="{{ url_for('static', filename='images/logo.png') }}" alt="Main logo">
                 </a>
             </div>
             <!-- Collection of nav links and other content for toggling -->
@@ -74,7 +76,7 @@
                   <li class="clickable">
                     <a href="#">
                       <img
-                          src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-link.png" alt="Sign in with Twitter" />
+                          src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-link.png" alt="Sign in with Twitter">
                     </a>
                   </li>
                 </ul>
@@ -88,7 +90,6 @@
         </div>
     </div>
 
-
     <!-- Main dynamic grid, 12 columns. -->
     <div class="container-fluid">
       <div class="row">
@@ -101,15 +102,18 @@
             </div>
           </div>
 
+          <div id="map_container" class="container" style="display: block">
+            <div id="map"></div>
+          </div>
+
           <!-- Avatar and speech bubble for sm and xs. -->
           <div class="visible-sm-block visible-xs-block">
             <div class="bubble bubble-bottom-right speech-buuble-text-main">
               The threat to our liberty from Wasington has never been greater.
             </div>
-            <img class="candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" alt="A candidate" />
+            <img class="candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" style="" alt="A candidate">
           </div>
 
-          <img class="usa-map img-responsive" src="{{ url_for('static', filename='images/usa_votes.png') }}" alt="Map of the USA" />
           <div>
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.Quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus. Tibulum consectetur scelerisque lacus, ac fermentum lorem convallis sed.</p>
           </div>
@@ -117,10 +121,19 @@
 
         <!-- Right bar, hidden on xs and sm. -->
         <div class="col-md-3 hidden-sm hidden-xs">
-          <img class=" candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" alt="A candidate" />
+          <img class=" candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" alt="A candidate">
         </div>
       </div>
     </div>
 
+    <script>
+      $(document).ready(function() {
+        buildMap($('#map'), $('#map_container').width() * 0.9);
+      });
+      $(window).resize(function() {
+        console.log("rezising")
+        buildMap($('#map'), $('#map_container').width() * 0.9);
+      });
+    </script>
   </body>
 </html>
