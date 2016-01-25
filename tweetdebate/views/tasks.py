@@ -25,10 +25,12 @@ def twitter_post_status():
             and __is_time_for_new_question(question_cadence_minutes):
         current_question = Question.get_current_question()
         
-        #TODO: detect Twitter failures - add to monitoring and log files?
         if post_to_twitter != False:
-            twitter_api = TwitterAPI()
-            twitter_api.update_status(next_question.question_text)
+            try:
+                twitter_api = TwitterAPI()
+                twitter_api.update_status(next_question.question_text)
+            except tweepy.TweepError as e:
+                pass  #TODO: do something - message to monitoring?
 
         if current_question is not None:
             current_question.end_time = datetime.datetime.now()
