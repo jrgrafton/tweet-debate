@@ -1,4 +1,5 @@
 from tweepy import OAuthHandler
+import os
 
 class TwitterBase(object):
 
@@ -13,6 +14,15 @@ class TwitterBase(object):
     access_token_secret="z81oANy3Uyywvvi36rOK3UYJoqvxKI1TACc44MOBx4pSI"
 
     def __init__(self):
+        print()
+        if os.getenv('FLASK_CONF') == "TEST" or \
+                "Development" in os.getenv('SERVER_SOFTWARE'):
+            # @TODO setup test keys
+            pass
+        else:
+            # @TODO seup prod keys
+            pass
+
         self.auth = OAuthHandler(self.consumer_key,
                                  self.consumer_secret)
         self.auth.set_access_token(self.access_token,

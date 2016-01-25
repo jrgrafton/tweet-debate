@@ -1,3 +1,4 @@
+import os
 import tweepy
 from tweetdebate.tasks.twitter_base import TwitterBase
 
@@ -12,4 +13,14 @@ class TwitterAPI(TwitterBase):
 
     def update_status(self, status):
         return self.api.update_status(status)
+
+    def get_last_tweet(self):
+        return self.api.user_timeline(id = self.api.me().id, count = 1)[0].text
+
+    def delete_all_tweets(self):
+        if "Development" in os.getenv('SERVER_SOFTWARE'):
+            # Function disabled in production
+            timeline = self.api.user_timeline(count = 10)
+            for status in timeline:
+                self.api.destroy_status(status.id)
         
