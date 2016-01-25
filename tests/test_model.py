@@ -3,6 +3,7 @@ test_model.py - tests models
 """
 
 from appengine_fixture_loader.loader import load_fixture
+
 from tweetdebate.models import Question
 from tweetdebate.models import State
 from test_base import TestBase

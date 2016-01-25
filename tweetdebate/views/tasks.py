@@ -3,6 +3,7 @@ import time
 import logging
 
 from flask import Blueprint
+from flask import request
 from tweetdebate.models import Question
 from tweetdebate.models import State
 from tweetdebate.tasks.twitter_api import TwitterAPI
@@ -10,17 +11,22 @@ from tweetdebate.tasks.twitter_stream import TwitterStream
 
 mod = Blueprint('tasks', __name__)
 
-@mod.route("/tasks/twitter_post_status/<int:question_cadence_minutes>")
-def twitter_post_status(question_cadence_minutes, post_to_twitter = True):
+@mod.route("/tasks/twitter_post_status")
+def twitter_post_status():
     """ Potentially post a new status to Twitter
     """
+    # Can be overriden in GET request
+    question_cadence_minutes = \
+        int(request.args.get('question_cadence_minutes', 60 * 6))
+    post_to_twitter = request.args.get('post_to_twitter', False)
+    
     next_question = Question.get_next_question()
     if next_question is not None \
             and __is_time_for_new_question(question_cadence_minutes):
         current_question = Question.get_current_question()
         
-        #TODO: detect Twitter failures?
-        if post_to_twitter:
+        #TODO: detect Twitter failures - add to monitoring and log files?
+        if post_to_twitter != False:
             twitter_api = TwitterAPI()
             twitter_api.update_status(next_question.question_text)
 
