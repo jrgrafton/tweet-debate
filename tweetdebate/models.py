@@ -35,6 +35,7 @@ class State(ndb.Model):
 
 class Question(ndb.Model):
     """Models questions"""
+    twitterid = ndb.StringProperty(indexed=False)
     image = ndb.StringProperty(indexed=False)
     question_text = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
@@ -63,6 +64,7 @@ class Question(ndb.Model):
 class Vote(ndb.Model):
     """Models an individual Vote - always associated with user"""
     question = ndb.KeyProperty(kind=Question)
+    replyid = ndb.StringProperty(indexed=False)
     state = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
@@ -80,3 +82,19 @@ class User(ndb.Model):
     userid = ndb.StringProperty()
     sway_points = ndb.IntegerProperty(default=50) # Default 50 swing points
     votes = ndb.StructuredProperty(Vote, repeated=True)
+
+    @classmethod
+    def query_by_userid(cls, userid):
+        return cls.query(cls.userid==userid)
+
+    @classmethod
+    def add_vote_for_user(cls, userid, vote):
+        entity = User.query_by_userid()
+        if entity is not None:
+            user = User(
+                userid = userid,
+                votes = [vote]
+            )
+            
+        else:
+            user.votes.append(vote)

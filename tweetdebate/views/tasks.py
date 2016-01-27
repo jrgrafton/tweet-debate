@@ -9,6 +9,7 @@ from tweetdebate.models import Question
 from tweetdebate.models import State
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from tweetdebate.tasks.twitter_stream import TwitterStream
+from tweepy import TweepError
 from tweepy.streaming import StreamListener
 
 mod = Blueprint('tasks', __name__)
@@ -30,8 +31,10 @@ def twitter_post_status():
         if post_to_twitter != False:
             try:
                 twitter_api = TwitterAPI()
-                twitter_api.update_status(next_question.question_text)
-            except tweepy.TweepError as e:
+                status = twitter_api.update_status(next_question.question_text)
+                next_question.twitterid = str(status.id)
+                next_question.put()
+            except TweepError as e:
                 pass  #TODO: do something - message to monitoring?
 
         if current_question is not None:
@@ -63,12 +66,13 @@ def twitter_stream():
     # Start or stop stream?
     action = request.args.get('action', "start")
 
-    pid_file = os.path.dirname(os.path.realpath(__file__)) % \
+    pid_file = os.path.dirname(os.path.realpath(__file__)) + \
             "/../../daemon-twitterstream.pid"
-    twitter_stream = TwitterStream(pid_file)
+    twitter_stream = TwitterStream(TwitterStreamListener(), pid_file)
 
     if action == "start":
-        twitter_stream.start(TwitterStreamListener())
+        #twitter_stream.start()
+        twitter_stream.run()
         return 'Started Twitter Stream', 200
     else:
         twitter_stream.stop()
@@ -78,8 +82,8 @@ class TwitterStreamListener(StreamListener):
     """ A listener handles tweets that are received from the stream.
     """
     def on_data(self, data):
-        print("on_data: %s", str(data))
+        logging.info("on_data: %s", str(data))
         return True
 
     def on_error(self, status):
-        print("on_error: %s", str(status))
+        logging.info("on_error: %s", str(status))

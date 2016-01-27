@@ -1,7 +1,7 @@
 cron:
 - description: post twitter status
   url: /tasks/twitter_post_status?question_cadence_minutes=1&post_to_twitter=True
-  schedule: every 1 question_cadence_minutes
+  schedule: every 1 minutes
 
 - description: start twitter stream
   url: /tasks/twitter_stream?action=start

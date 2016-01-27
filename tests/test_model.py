@@ -75,6 +75,3 @@ class TestModel(TestBase):
         # Check get current question start  time
         current_question_start_time = Question.get_current_question_start_time()
         assert current_question_start_time == None
-    
-#if __name__ == '__main__':
-#    unittest.main()

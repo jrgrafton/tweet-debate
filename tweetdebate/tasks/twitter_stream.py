@@ -11,17 +11,19 @@ class TwitterStream(TwitterBase, Daemon):
     Twitter timeline and store in our backend model.
     """
     stream = None
+    listener = None
 
-    def __init__(self, pidfile, stdin='/dev/null',
+    def __init__(self, listener, pidfile, stdin='/dev/null',
                  stdout='/dev/null', stderr='/dev/null'):
         TwitterBase.__init__(self)
-        Daemon.__init__(pidfile, stdin='/dev/null',
+        Daemon.__init__(self, pidfile, stdin='/dev/null',
                  stdout='/dev/null', stderr='/dev/null')
+        self.listener = listener
 
-    def run(self, listener):
+    def run(self):
         logging.info('run:')
 
-        self.stream = Stream(self.auth, listener)
+        self.stream = Stream(self.auth, self.listener)
         self.stream.userstream(_with='user',
                           stall_warnings=True,
                           async=False)

@@ -1,7 +1,10 @@
 """
 test_views.py - tests views
 """
+import json
+
 from flask.ext.api import status
+from google.appengine.ext import ndb
 from appengine_fixture_loader.loader import load_fixture
 
 from tweetdebate.models import Question
@@ -17,7 +20,7 @@ class TestView(TestBase):
     def tearDown(self):
         self.testbed.deactivate()
 
-    def test_view_tasks_twitter_stream(self):
+    """def test_view_tasks_twitter_stream(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
@@ -29,13 +32,16 @@ class TestView(TestBase):
         # TODO: check for PID file
         # TODO: activate again and ensure no crash
         # TODO: call stop and check for removal of PID file
-
+"""
+   
     def test_view_tasks_twitter_stream_listener(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
 
         # TODO: pass mock data to on_data and ensure correct results
+            # Reply for new user
+            # Reply for existing user
             # Reply to old question - no update
             # Reply to correct question - update
             # Reply with no state - no update
@@ -55,8 +61,12 @@ class TestView(TestBase):
         reponse = \
             self.app.get('/tasks/twitter_post_status' \
                 '?question_cadence_minutes=1&post_to_twitter=True')
+        current_question = Question.get_current_question()
+        ndb.get_context().clear_cache()
+        assert current_question.twitterid != None
         assert "Posted new status" in reponse.data
         assert status.is_success(reponse.status_code) == True
+
 
         # Ensure Twitter timeline has been updated
         twitter_status = twitter_api.get_last_tweet()
