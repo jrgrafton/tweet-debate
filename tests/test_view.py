@@ -17,6 +17,32 @@ class TestView(TestBase):
     def tearDown(self):
         self.testbed.deactivate()
 
+    def test_view_tasks_twitter_stream(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+
+        reponse = \
+            self.app.get('/tasks/twitter_stream?action=start')
+        assert "Started Twitter Stream" in reponse.data
+        
+        # TODO: check for PID file
+        # TODO: activate again and ensure no crash
+        # TODO: call stop and check for removal of PID file
+
+    def test_view_tasks_twitter_stream_listener(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+
+        # TODO: pass mock data to on_data and ensure correct results
+            # Reply to old question - no update
+            # Reply to correct question - update
+            # Reply with no state - no update
+            # Reply with no #yes or #no - no update
+            # Same user, second reply after valid first reponse - no update
+            # Same user, second reply after invalid reponse - update
+
     def test_view_tasks_twitter_post_status(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 

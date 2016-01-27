@@ -1,29 +1,36 @@
 from __future__ import absolute_import, print_function
 from tweepy.streaming import StreamListener
-from tweepy import OAuthHandler
 from tweepy import Stream
 
 import logging
 from tweetdebate.tasks.twitter_base import TwitterBase
+from tweetdebate.tasks.daemon import Daemon
 
-class TwitterStream(TwitterBase):
+class TwitterStream(TwitterBase, Daemon):
     """ A TwitterStream class that will continuously capture data from a
     Twitter timeline and store in our backend model.
     """
-    def __init__(self):
+    stream = None
+
+    def __init__(self, pidfile, stdin='/dev/null',
+                 stdout='/dev/null', stderr='/dev/null'):
         TwitterBase.__init__(self)
+        Daemon.__init__(pidfile, stdin='/dev/null',
+                 stdout='/dev/null', stderr='/dev/null')
 
-    def start(self):
-        logging.info('start:')
-        l = StdOutListener()
+    def run(self, listener):
+        logging.info('run:')
 
-        stream = Stream(self.auth, l)
-        stream.userstream(_with='user',
+        self.stream = Stream(self.auth, listener)
+        self.stream.userstream(_with='user',
                           stall_warnings=True,
                           async=False)
+    
+    def stop(self):
+        logging.info('stop:')
+        super(Daemon, self).stop()
+        self.stream.disconnect()
 
-    def is_running(self):
-        return False
 
 class StdOutListener(StreamListener):
     """ A listener handles tweets that are received from the stream.

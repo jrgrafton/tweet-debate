@@ -1,6 +1,7 @@
 import datetime
-import time
+import os
 import logging
+import time
 
 from flask import Blueprint
 from flask import request
@@ -8,6 +9,7 @@ from tweetdebate.models import Question
 from tweetdebate.models import State
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from tweetdebate.tasks.twitter_stream import TwitterStream
+from tweepy.streaming import StreamListener
 
 mod = Blueprint('tasks', __name__)
 
@@ -56,11 +58,28 @@ def __is_time_for_new_question(question_cadence_minutes):
 
 @mod.route("/tasks/twitter_stream")
 def twitter_stream():
-    """ Check if Twitter Stream task is running.
-    If not, restart it.
+    """ Activate Twitter Stream Daemon
     """
-    twitter_stream = TwitterStream()
-    if not twitter_stream.is_running():
-      twitter_stream.start()
+    # Start or stop stream?
+    action = request.args.get('action', "start")
 
-    return 'Actvated Twitter Stream', 200
+    pid_file = os.path.dirname(os.path.realpath(__file__)) % \
+            "/../../daemon-twitterstream.pid"
+    twitter_stream = TwitterStream(pid_file)
+
+    if action == "start":
+        twitter_stream.start(TwitterStreamListener())
+        return 'Started Twitter Stream', 200
+    else:
+        twitter_stream.stop()
+        return 'Stopped Twitter Stream', 200
+
+class TwitterStreamListener(StreamListener):
+    """ A listener handles tweets that are received from the stream.
+    """
+    def on_data(self, data):
+        print("on_data: %s", str(data))
+        return True
+
+    def on_error(self, status):
+        print("on_error: %s", str(status))
