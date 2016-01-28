@@ -10,7 +10,9 @@ from appengine_fixture_loader.loader import load_fixture
 
 from tweetdebate.models import Question
 from tweetdebate.models import State
+from tweetdebate.models import User
 from tweetdebate.views import tasks
+from tweetdebate.views.tasks import TwitterStreamListener
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from test_base import TestBase
 
@@ -39,25 +41,129 @@ class TestView(TestBase):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
-        
+        twitter_stream_listener = TwitterStreamListener()
+
+        # party from string extraction
+        current_question = Question.get_current_question()
+        current_question_party = current_question.party
+
+        test_text = "#NO #no I disagree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == 1 - current_question_party # Inverse current party
+
+        test_text = "#YeS I agree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == current_question_party 
+
+        test_text = "#YeSssir I agree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "#nobody agree(s)"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "NO no I disagree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "#Yes #Yes #no I agree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "#AL #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == "AL"
+
+        test_text = "#ALAL #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
+        test_text = "AL #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
+        test_text = "#AL #AK #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
+        test_text = "#no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
         twitter_stream = open(os.path.join(os.path.dirname(__file__),
                                           'twitter_stream.json'))
         twitter_stream = json.load(twitter_stream)
-        
-        
-        return
+        twitter_stream_listener.on_data(twitter_stream["twitter_reply_old"])
+        users = User.get_all()
+        assert len(users) == 0
 
-        # TODO: pass mock data to on_data and ensure correct results
-            # Reply for new user
-            # Reply for existing user
-            # Reply to old question - no update
-            # Reply to correct question - update
-            # Reply with no state - no update
-            # Reply with no #yes or #no - no update
-            # Same user, second reply after valid first reponse - no update
-            # Same user, second reply after invalid reponse - update
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_reply_old"])
+        users = User.get_all()
+        assert len(users) == 0
+        
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_reply_current_invalid"])
+        users = User.get_all()
+        assert len(users) == 0
+        
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_post"])
+        users = User.get_all()
+        assert len(users) == 0
+        
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_mention"])
+        users = User.get_all()
+        assert len(users) == 0
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_retweet"])
+        users = User.get_all()
+        assert len(users) == 0
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_favourite"])
+        users = User.get_all()
+        assert len(users) == 0
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_favourite_reply"])
+        users = User.get_all()
+        assert len(users) == 0
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_reply_current_valid_user1"])
+        users = User.get_all()
+        assert len(users) == 1
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_reply_current_valid_user1"])
+        users = User.get_all()
+        assert len(users) == 1
+        assert len(users[0].votes) == 1
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_reply_current_valid_user2"])
+        users = User.get_all()
+        assert len(users) == 2
+
+        twitter_stream_listener.on_data(
+            twitter_stream["twitter_reply_current_valid_user2"])
+        users = User.get_all()
+        assert len(users) == 2
+
+        # TODO: Verify Question.state_scores
 
     def test_view_tasks_twitter_post_status(self):
+        # TODO: allow for twitter based tests when done with others 
         return;
 
         load_fixture('tests/states.json', kind={'State': State})

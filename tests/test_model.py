@@ -25,7 +25,7 @@ class TestModel(TestBase):
                         kind={'Question': Question,'State': State})
 
         current_question_entity = Question.get_current_question()
-        User.add_vote_for_user("jrgrafton_test", Vote(
+        User.add_user_vote(None, "jrgrafton_test", Vote(
             question = current_question_entity.key,
             replyid = "692368266292023296",
             state = "CA",
@@ -43,12 +43,15 @@ class TestModel(TestBase):
 
         # Ensure a reply to a different question is tallied
         next_question_entity = Question.get_current_question()
-        User.add_vote_for_user("jrgrafton_test", Vote(
+        User.add_user_vote(user_entity[0], "jrgrafton_test", Vote(
             question = next_question_entity.key,
             replyid = "692368266292023297",
             state = "WA",
             party = 1
         ))
+
+        # Ensure new vote was collated under existing user
+        user_entity = User.query_by_userid("jrgrafton_test").fetch()
         assert len(user_entity) == 1
         assert len(user_entity[0].votes) == 2
 

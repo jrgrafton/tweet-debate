@@ -86,12 +86,15 @@ class User(ndb.Model):
     votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
 
     @classmethod
+    def get_all(cls):
+        return cls.query().fetch()
+
+    @classmethod
     def query_by_userid(cls, userid):
         return cls.query(cls.userid==userid)
 
     @classmethod
-    def add_vote_for_user(cls, userid, vote):
-        user = User.query_by_userid(userid).get()
+    def add_user_vote(cls, user, userid, vote):
         if user is None:
             user = User(
                 userid = userid,
@@ -100,3 +103,4 @@ class User(ndb.Model):
             user.put()
         else:
             user.votes.append(vote)
+            user.put()
