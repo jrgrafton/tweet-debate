@@ -6,6 +6,9 @@ from appengine_fixture_loader.loader import load_fixture
 
 from tweetdebate.models import Question
 from tweetdebate.models import State
+from tweetdebate.models import User
+from tweetdebate.models import Vote
+
 from test_base import TestBase
 
 class TestModel(TestBase):
@@ -15,6 +18,53 @@ class TestModel(TestBase):
     def tearDown(self):
         self.testbed.deactivate()
 
+    def test_model_user(self):
+        # Load fixtures
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+
+        current_question_entity = Question.get_current_question()
+        User.add_vote_for_user("jrgrafton_test", Vote(
+            question = current_question_entity.key,
+            replyid = "692368266292023296",
+            state = "CA",
+            party = 0
+        ))
+
+        # Ensure user was created
+        user_entity = User.query_by_userid("jrgrafton_test").fetch()
+        assert len(user_entity) == 1
+        assert user_entity[0].userid == "jrgrafton_test"
+        assert user_entity[0].votes[0].question == current_question_entity.key
+        assert user_entity[0].votes[0].replyid == "692368266292023296"
+        assert user_entity[0].votes[0].state == "CA"
+        assert user_entity[0].votes[0].party == 0
+
+        # Ensure a reply to a different question is tallied
+        next_question_entity = Question.get_current_question()
+        User.add_vote_for_user("jrgrafton_test", Vote(
+            question = next_question_entity.key,
+            replyid = "692368266292023297",
+            state = "WA",
+            party = 1
+        ))
+        assert len(user_entity) == 1
+        assert len(user_entity[0].votes) == 2
+
+        # Verify integrity of new vote
+        assert user_entity[0].votes[1].question == next_question_entity.key
+        assert user_entity[0].votes[1].replyid == "692368266292023297"
+        assert user_entity[0].votes[1].state == "WA"
+        assert user_entity[0].votes[1].party == 1
+
+        # Verify integrity of old vote
+        assert user_entity[0].userid == "jrgrafton_test"
+        assert user_entity[0].votes[0].question == current_question_entity.key
+        assert user_entity[0].votes[0].replyid == "692368266292023296"
+        assert user_entity[0].votes[0].state == "CA"
+        assert user_entity[0].votes[0].party == 0
+        
     def test_model_state(self):
         # Load fixtures
         load_fixture('tests/states.json', kind={'State': State})
@@ -35,6 +85,10 @@ class TestModel(TestBase):
         state_entity = State.get_state_by_abbreviation("NY")
         assert state_entity.party_score_votes[0] == 0
         assert state_entity.party_score_votes[1] == 0
+
+        assert State.is_valid_state("CA") == True
+        assert State.is_valid_state("WA") == True
+        assert State.is_valid_state("INVALID") == False
 
     def test_model_question(self):
         # Load fixtures

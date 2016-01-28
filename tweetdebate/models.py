@@ -18,6 +18,12 @@ class State(ndb.Model):
     def get_state_by_abbreviation(cls, state_abbreviation):
         return cls.query(cls.state_abbreviation == state_abbreviation).get()
 
+    @classmethod
+    def is_valid_state(cls, state_abbreviation):
+        entity = \
+                cls.query(cls.state_abbreviation == state_abbreviation).get()
+        return entity is not None
+
     # Updates state scores based on result of a question
     @classmethod
     def update_state_scores(cls, question_state_scores):
@@ -73,15 +79,11 @@ class Vote(ndb.Model):
     def query_by_question(cls, question_entity):
         return cls.query(cls.question==question_entity.key)
 
-    @classmethod
-    def query_by_userid(cls, userid):
-        return cls.query(cls.user.get().userid==userid)
-
 class User(ndb.Model):
     """Models an individual User"""
     userid = ndb.StringProperty()
-    sway_points = ndb.IntegerProperty(default=50) # Default 50 swing points
-    votes = ndb.StructuredProperty(Vote, repeated=True)
+    sway_points = ndb.IntegerProperty(indexed=False, default=50) # Default 50 swing points
+    votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
 
     @classmethod
     def query_by_userid(cls, userid):
@@ -89,12 +91,12 @@ class User(ndb.Model):
 
     @classmethod
     def add_vote_for_user(cls, userid, vote):
-        entity = User.query_by_userid()
-        if entity is not None:
+        user = User.query_by_userid(userid).get()
+        if user is None:
             user = User(
                 userid = userid,
                 votes = [vote]
             )
-            
+            user.put()
         else:
             user.votes.append(vote)

@@ -83,7 +83,45 @@ class TwitterStreamListener(StreamListener):
     """
     def on_data(self, data):
         logging.info("on_data: %s", str(data))
+        self.parse_data(data)
         return True
 
     def on_error(self, status):
         logging.info("on_error: %s", str(status))
+
+    def parse_data(self, data):
+        # Process replies
+        if "in_reply_to_status_id" in data:
+            current_question = Question.get_current_question()
+            reply_status_id = str(data["in_reply_to_status_id"])
+
+            # Only acknowledge replies to current question
+            if reply_status_id != current_question.twitterid:
+                screen_name = data["screen_name"]
+                state = self.get_state_from_string(data["text"])
+                party = self.get_party_from_string_using_question(
+                    data["text"], 
+                    current_question)
+                
+                # Ignore reply unless valid party and state is specified
+                if state != None and party != None:
+                    User.add_vote_for_user(screen_name, Vote(
+                        question = current_question.key,
+                        replyid = str(data["id"]),
+                        state = "WA",
+                        party = 1
+                    ))
+
+    def get_state_from_string(self, string):
+        return True
+
+    def get_party_from_string_using_question(self, string, question):
+        question_party = question.party
+        string = string.lower()
+        if "#yes" in string and "#no" not in string:
+            return question.party
+        else if "#no" in string and "#yes" not in string:
+            return  1 - question_party
+
+        # Not vote or vote was both #yes and #no
+        return None

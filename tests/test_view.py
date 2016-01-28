@@ -2,6 +2,7 @@
 test_views.py - tests views
 """
 import json
+import os
 
 from flask.ext.api import status
 from google.appengine.ext import ndb
@@ -38,6 +39,13 @@ class TestView(TestBase):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
+        
+        twitter_stream = open(os.path.join(os.path.dirname(__file__),
+                                          'twitter_stream.json'))
+        twitter_stream = json.load(twitter_stream)
+        
+        
+        return
 
         # TODO: pass mock data to on_data and ensure correct results
             # Reply for new user
@@ -50,6 +58,8 @@ class TestView(TestBase):
             # Same user, second reply after invalid reponse - update
 
     def test_view_tasks_twitter_post_status(self):
+        return;
+
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
