@@ -118,8 +118,8 @@ class TwitterStreamListener(StreamListener):
                         User.add_user_vote(user, screen_name, Vote(
                             question = current_question.key,
                             replyid = str(data["id"]),
-                            state = "WA",
-                            party = 1
+                            state = state,
+                            party = party
                         ))
 
     def get_state_from_string(self, string):

@@ -37,10 +37,11 @@ class TestView(TestBase):
         # TODO: call stop and check for removal of PID file
 """
    
-    def test_view_tasks_twitter_stream_listener(self):
+    def test_view_tasks_twitter_stream_listener_get_party(self):
         load_fixture('tests/states.json', kind={'State': State})
-        load_fixture('tests/questions.json', 
+        load_fixture('tests/questions_no_votes.json', 
                         kind={'Question': Question,'State': State})
+
         twitter_stream_listener = TwitterStreamListener()
 
         # party from string extraction
@@ -77,6 +78,13 @@ class TestView(TestBase):
             get_party_from_string_using_question(test_text, current_question)
         assert result == None
 
+    def test_view_tasks_twitter_stream_listener_get_state(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
+
+        twitter_stream_listener = TwitterStreamListener()
+
         test_text = "#AL #no I agree"
         result = twitter_stream_listener.get_state_from_string(test_text)
         assert result == "AL"
@@ -97,9 +105,16 @@ class TestView(TestBase):
         result = twitter_stream_listener.get_state_from_string(test_text)
         assert result == None
 
+    def test_view_tasks_twitter_stream_listener_on_data(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
+
         twitter_stream = open(os.path.join(os.path.dirname(__file__),
                                           'twitter_stream.json'))
         twitter_stream = json.load(twitter_stream)
+
+        twitter_stream_listener = TwitterStreamListener()
         twitter_stream_listener.on_data(twitter_stream["twitter_reply_old"])
         users = User.get_all()
         assert len(users) == 0
@@ -139,21 +154,40 @@ class TestView(TestBase):
         users = User.get_all()
         assert len(users) == 0
 
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 0
+
         twitter_stream_listener.on_data(
             twitter_stream["twitter_reply_current_valid_user1"])
         users = User.get_all()
         assert len(users) == 1
+
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 1
+        assert current_question.state_scores[0].state_abbreviation == "CA"
+        assert current_question.state_scores[0].party_score_votes[0] == 0
+        assert current_question.state_scores[0].party_score_votes[1] == 1
 
         twitter_stream_listener.on_data(
             twitter_stream["twitter_reply_current_valid_user1"])
         users = User.get_all()
         assert len(users) == 1
         assert len(users[0].votes) == 1
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 1
+        assert current_question.state_scores[0].state_abbreviation == "CA"
+        assert current_question.state_scores[0].party_score_votes[0] == 0
+        assert current_question.state_scores[0].party_score_votes[1] == 1
 
         twitter_stream_listener.on_data(
             twitter_stream["twitter_reply_current_valid_user2"])
         users = User.get_all()
         assert len(users) == 2
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 2
+        assert current_question.state_scores[1].state_abbreviation == "WA"
+        assert current_question.state_scores[1].party_score_votes[0] == 1
+        assert current_question.state_scores[1].party_score_votes[1] == 0
 
         twitter_stream_listener.on_data(
             twitter_stream["twitter_reply_current_valid_user2"])
