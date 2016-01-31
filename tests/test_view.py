@@ -36,75 +36,6 @@ class TestView(TestBase):
         # TODO: activate again and ensure no crash
         # TODO: call stop and check for removal of PID file
 """
-   
-    def test_view_tasks_twitter_stream_listener_get_party(self):
-        load_fixture('tests/states.json', kind={'State': State})
-        load_fixture('tests/questions_no_votes.json', 
-                        kind={'Question': Question,'State': State})
-
-        twitter_stream_listener = TwitterStreamListener()
-
-        # party from string extraction
-        current_question = Question.get_current_question()
-        current_question_party = current_question.party
-
-        test_text = "#NO #no I disagree"
-        result = twitter_stream_listener. \
-            get_party_from_string_using_question(test_text, current_question)
-        assert result == 1 - current_question_party # Inverse current party
-
-        test_text = "#YeS I agree"
-        result = twitter_stream_listener. \
-            get_party_from_string_using_question(test_text, current_question)
-        assert result == current_question_party 
-
-        test_text = "#YeSssir I agree"
-        result = twitter_stream_listener. \
-            get_party_from_string_using_question(test_text, current_question)
-        assert result == None
-
-        test_text = "#nobody agree(s)"
-        result = twitter_stream_listener. \
-            get_party_from_string_using_question(test_text, current_question)
-        assert result == None
-
-        test_text = "NO no I disagree"
-        result = twitter_stream_listener. \
-            get_party_from_string_using_question(test_text, current_question)
-        assert result == None
-
-        test_text = "#Yes #Yes #no I agree"
-        result = twitter_stream_listener. \
-            get_party_from_string_using_question(test_text, current_question)
-        assert result == None
-
-    def test_view_tasks_twitter_stream_listener_get_state(self):
-        load_fixture('tests/states.json', kind={'State': State})
-        load_fixture('tests/questions_no_votes.json', 
-                        kind={'Question': Question,'State': State})
-
-        twitter_stream_listener = TwitterStreamListener()
-
-        test_text = "#AL #no I agree"
-        result = twitter_stream_listener.get_state_from_string(test_text)
-        assert result == "AL"
-
-        test_text = "#ALAL #no I agree"
-        result = twitter_stream_listener.get_state_from_string(test_text)
-        assert result == None
-
-        test_text = "AL #no I agree"
-        result = twitter_stream_listener.get_state_from_string(test_text)
-        assert result == None
-
-        test_text = "#AL #AK #no I agree"
-        result = twitter_stream_listener.get_state_from_string(test_text)
-        assert result == None
-
-        test_text = "#no I agree"
-        result = twitter_stream_listener.get_state_from_string(test_text)
-        assert result == None
-
     def test_view_tasks_twitter_stream_listener_on_data(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions_no_votes.json', 
@@ -194,7 +125,140 @@ class TestView(TestBase):
         users = User.get_all()
         assert len(users) == 2
 
-        # TODO: Verify Question.state_scores
+    def test_view_tasks_twitter_stream_listener_add_vote_for_screenname(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+        twitter_stream_listener = TwitterStreamListener()
+        current_question = Question.get_current_question()
+        
+        result = twitter_stream_listener.\
+                    add_vote_for_screenname(current_question,
+                                            "123",
+                                            None, # Invalid state
+                                            1,
+                                            "jrgrafton")
+        assert result == False
+
+        result = twitter_stream_listener.\
+            add_vote_for_screenname(current_question,
+                                    "123",
+                                    "CA",
+                                    None, # Invalid party
+                                    "jrgrafton")
+        assert result == False
+
+        # First valid user
+        result = twitter_stream_listener.\
+            add_vote_for_screenname(current_question,
+                                    "123",
+                                    "CA",
+                                    0,
+                                    "jrgrafton")
+        assert result == True
+        user = User.query_by_userid("jrgrafton").get()
+        assert user != None
+        assert len(user.votes) == 1
+        assert user.votes[0].question.get().key == current_question.key
+        assert user.votes[0].replyid == "123"
+        assert user.votes[0].state == "CA"
+        assert user.votes[0].party == 0
+
+        # Second vote for user on same question
+        result = twitter_stream_listener.\
+            add_vote_for_screenname(current_question,
+                                    "123",
+                                    "WA",
+                                    1,
+                                    "jrgrafton")
+        assert result == False
+
+        # Second valid user
+        result = twitter_stream_listener.\
+            add_vote_for_screenname(current_question,
+                                    "123",
+                                    "WA",
+                                    1,
+                                    "jrgrafton_test")
+        assert result == False
+        users = User.get_all()
+        assert len(users) == 2
+        user = users[1]
+        assert len(user.votes) == 1
+        assert user.votes[0].question.get().key == current_question.key
+        assert user.votes[0].replyid == "123"
+        assert user.votes[0].state == "WA"
+        assert user.votes[0].party == 1
+
+        # @TODO: Go to new question and test valid votes 
+
+    def test_view_tasks_twitter_stream_listener_get_party(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
+
+        twitter_stream_listener = TwitterStreamListener()
+
+        # party from string extraction
+        current_question = Question.get_current_question()
+        current_question_party = current_question.party
+
+        test_text = "#NO #no I disagree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == 1 - current_question_party # Inverse current party
+
+        test_text = "#YeS I agree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == current_question_party 
+
+        test_text = "#YeSssir I agree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "#nobody agree(s)"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "NO no I disagree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+        test_text = "#Yes #Yes #no I agree"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == None
+
+    def test_view_tasks_twitter_stream_listener_get_state(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
+
+        twitter_stream_listener = TwitterStreamListener()
+
+        test_text = "#AL #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == "AL"
+
+        test_text = "#ALAL #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
+        test_text = "AL #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
+        test_text = "#AL #AK #no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
+
+        test_text = "#no I agree"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == None
 
     def test_view_tasks_twitter_post_status(self):
         # TODO: allow for twitter based tests when done with others 

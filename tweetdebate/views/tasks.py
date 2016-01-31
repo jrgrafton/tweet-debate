@@ -106,21 +106,53 @@ class TwitterStreamListener(StreamListener):
                     data["text"], 
                     current_question)
                 
-                # Ignore reply unless valid party and state is specified
-                if state != None and party != None:
-                    user = User.query_by_userid(screen_name).get()
-                    
-                    # User has never voted or never voted for this question
-                    if user == None or \
-                        user.votes[-1].question.get().twitterid != \
-                        reply_status_id:
-                        
-                        User.add_user_vote(user, screen_name, Vote(
-                            question = current_question.key,
-                            replyid = str(data["id"]),
-                            state = state,
-                            party = party
-                        ))
+                # Only add vote for question if user vote was valid
+                if self.add_vote_for_screenname(current_question, 
+                                                str(data["id"]),
+                                                state,
+                                                party,
+                                                screen_name):
+                    self.add_vote_for_question(party, state, question)
+
+    def add_vote_for_screenname(question, replyid, state, party, screen_name):
+        # Require valid state and party to vote
+        if state != None and party != None:
+            return False
+       
+        # Require new user or user never voted on this question
+        user = User.query_by_userid(screen_name).get()
+        if user == None or user.votes[-1].question.get().key != question.key:
+
+            # Add vote for user
+            User.add_user_vote(user, screen_name, Vote(
+                question = question.key,
+                replyid = replyid,
+                state = state,
+                party = party
+            ))
+
+            return True
+        else:
+            return False
+
+    def add_vote_for_question(party, state, question):
+        # Add vote for question
+        # @TODO: could optimize to O(1) by pre-populating states
+        state_scores = question.state_scores
+        for state in state_scores:
+            if state.state_abbreviation == state:
+                party_score_votes[party]++
+                question.put()
+                return
+
+        # State had no votes previously
+        state_scores.append(State(
+            state_abbreviation = state,
+            party_score_votes = [0, 0],
+            party_score_sway = [0, 0] 
+        ))
+        state_scores[-1].party_score_votes[party]++
+        question.put()
 
     def get_state_from_string(self, string):
         states = ["AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC",
