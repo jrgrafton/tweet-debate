@@ -74,8 +74,7 @@ def twitter_stream():
     twitter_stream = TwitterStream(TwitterStreamListener(), pid_file)
 
     if action == "start":
-        #twitter_stream.start()
-        twitter_stream.run()
+        twitter_stream.start()
         return 'Started Twitter Stream', 200
     else:
         twitter_stream.stop()
@@ -101,7 +100,7 @@ class TwitterStreamListener(StreamListener):
             # Only acknowledge replies to current question
             if reply_status_id == current_question.twitterid:
                 screen_name = data["user"]["screen_name"]
-                state = self.get_state_from_string(data["text"])
+                state_abbreviation = self.get_state_from_string(data["text"])
                 party = self.get_party_from_string_using_question(
                     data["text"], 
                     current_question)
@@ -109,49 +108,57 @@ class TwitterStreamListener(StreamListener):
                 # Only add vote for question if user vote was valid
                 if self.add_vote_for_screenname(current_question, 
                                                 str(data["id"]),
-                                                state,
+                                                state_abbreviation,
                                                 party,
                                                 screen_name):
-                    self.add_vote_for_question(party, state, question)
+                    self.add_vote_for_question(party,
+                                              state_abbreviation,
+                                              current_question)
 
-    def add_vote_for_screenname(question, replyid, state, party, screen_name):
+    def add_vote_for_screenname(self,
+                                question,
+                                replyid,
+                                state_abbreviation,
+                                party,
+                                screen_name):
         # Require valid state and party to vote
-        if state != None and party != None:
+        if state_abbreviation == None or party == None:
             return False
        
         # Require new user or user never voted on this question
-        user = User.query_by_userid(screen_name).get()
-        if user == None or user.votes[-1].question.get().key != question.key:
+        user = User.query_by_userid(screen_name).get()        
+        if user == None or \
+                user.votes[-1].question.get().key.id() != question.key.id():
 
-            # Add vote for user
-            User.add_user_vote(user, screen_name, Vote(
-                question = question.key,
-                replyid = replyid,
-                state = state,
-                party = party
-            ))
-
-            return True
+                # Add vote for user
+                User.add_user_vote(user, screen_name, Vote(
+                    question = question.key,
+                    replyid = replyid,
+                    state = state_abbreviation,
+                    party = party
+                ))
+                return True
         else:
             return False
 
-    def add_vote_for_question(party, state, question):
+    def add_vote_for_question(self, party, state_abbreviation, question):
         # Add vote for question
         # @TODO: could optimize to O(1) by pre-populating states
-        state_scores = question.state_scores
-        for state in state_scores:
-            if state.state_abbreviation == state:
-                party_score_votes[party]++
+        states = question.state_scores
+        for state in states:
+            if state.state_abbreviation == state_abbreviation:
+                state.party_score_votes[party] += 1
                 question.put()
                 return
 
         # State had no votes previously
-        state_scores.append(State(
-            state_abbreviation = state,
+        states.append(State(
+            state_abbreviation = state_abbreviation,
             party_score_votes = [0, 0],
             party_score_sway = [0, 0] 
         ))
-        state_scores[-1].party_score_votes[party]++
+
+        states[-1].party_score_votes[party] += 1
         question.put()
 
     def get_state_from_string(self, string):

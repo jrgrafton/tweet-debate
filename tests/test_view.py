@@ -23,19 +23,26 @@ class TestView(TestBase):
     def tearDown(self):
         self.testbed.deactivate()
 
-    """def test_view_tasks_twitter_stream(self):
+    def test_view_tasks_twitter_stream(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
 
-        reponse = \
-            self.app.get('/tasks/twitter_stream?action=start')
+        # Go to new question and test valid votes
+        reponse = self.app.get('/tasks/twitter_stream' \
+                               '?action=start')
         assert "Started Twitter Stream" in reponse.data
-        
-        # TODO: check for PID file
-        # TODO: activate again and ensure no crash
-        # TODO: call stop and check for removal of PID file
-"""
+        assert status.is_success(reponse.status_code) == True
+
+        daemon_pid = open(os.path.dirname(os.path.realpath(__file__)) + \
+                          "/../daemon-twitterstream.pid", "r").read
+        print(daemon_pid)
+
+        reponse = self.app.get('/tasks/twitter_stream' \
+                               '?action=stop')
+        assert "Stopped Twitter Stream" in reponse.data
+        assert status.is_success(reponse.status_code) == True
+
     def test_view_tasks_twitter_stream_listener_on_data(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions_no_votes.json', 
@@ -180,7 +187,7 @@ class TestView(TestBase):
                                     "WA",
                                     1,
                                     "jrgrafton_test")
-        assert result == False
+        assert result == True
         users = User.get_all()
         assert len(users) == 2
         user = users[1]
@@ -190,7 +197,55 @@ class TestView(TestBase):
         assert user.votes[0].state == "WA"
         assert user.votes[0].party == 1
 
-        # @TODO: Go to new question and test valid votes 
+        # Go to new question and test valid votes
+        reponse = self.app.get('/tasks/twitter_post_status' \
+                               '?question_cadence_minutes=1')
+        current_question = Question.get_current_question()
+
+        # Second vote for new question should work
+        result = twitter_stream_listener.\
+            add_vote_for_screenname(current_question,
+                                    "124",
+                                    "WA",
+                                    1,
+                                    "jrgrafton")
+        assert result == True
+        user = User.query_by_userid("jrgrafton").get()
+        assert user != None
+        assert len(user.votes) == 2
+        assert user.votes[1].question.get().key == current_question.key
+        assert user.votes[1].replyid == "124"
+        assert user.votes[1].state == "WA"
+        assert user.votes[1].party == 1
+
+
+    def test_view_tasks_twitter_stream_listener_add_vote_for_question(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
+        
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 0
+
+        twitter_stream_listener = TwitterStreamListener()
+        twitter_stream_listener.add_vote_for_question(0, "CA", current_question)
+
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 1
+        assert current_question.state_scores[0].state_abbreviation == "CA"
+        assert current_question.state_scores[0].party_score_votes[0] == 1
+        assert current_question.state_scores[0].party_score_votes[1] == 0
+
+        twitter_stream_listener.add_vote_for_question(0, "CA", current_question)
+        twitter_stream_listener.add_vote_for_question(1, "CA", current_question)
+        assert current_question.state_scores[0].party_score_votes[0] == 2
+        assert current_question.state_scores[0].party_score_votes[1] == 1
+
+        twitter_stream_listener.add_vote_for_question(1, "WA", current_question)
+        assert len(current_question.state_scores) == 2
+        assert current_question.state_scores[1].state_abbreviation == "WA"
+        assert current_question.state_scores[1].party_score_votes[0] == 0
+        assert current_question.state_scores[1].party_score_votes[1] == 1
 
     def test_view_tasks_twitter_stream_listener_get_party(self):
         load_fixture('tests/states.json', kind={'State': State})
