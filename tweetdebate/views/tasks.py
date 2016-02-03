@@ -71,7 +71,7 @@ def twitter_stream():
 
     pid_file = os.path.dirname(os.path.realpath(__file__)) + \
             "/../../daemon-twitterstream.pid"
-    twitter_stream = TwitterStream(TwitterStreamListener(), pid_file)
+    twitter_stream = TwitterStream(TwitterStreamListener())
 
     if action == "start":
         twitter_stream.start()

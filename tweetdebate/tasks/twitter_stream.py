@@ -4,23 +4,19 @@ from tweepy import Stream
 
 import logging
 from tweetdebate.tasks.twitter_base import TwitterBase
-from tweetdebate.tasks.daemon import Daemon
 
-class TwitterStream(TwitterBase, Daemon):
+class TwitterStream(TwitterBase):
     """ A TwitterStream class that will continuously capture data from a
     Twitter timeline and store in our backend model.
     """
     stream = None
     listener = None
 
-    def __init__(self, listener, pidfile, stdin='/dev/null',
-                 stdout='/dev/null', stderr='/dev/null'):
+    def __init__(self, listener):
         TwitterBase.__init__(self)
-        Daemon.__init__(self, pidfile, stdin='/dev/null',
-                 stdout='/dev/null', stderr='/dev/null')
         self.listener = listener
 
-    def run(self):
+    def start(self):
         logging.info('run:')
 
         self.stream = Stream(self.auth, self.listener)
