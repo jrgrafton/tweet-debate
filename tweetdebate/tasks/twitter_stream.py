@@ -17,7 +17,7 @@ class TwitterStream(TwitterBase):
         self.listener = listener
 
     def start(self):
-        logging.info('run:')
+        logging.info('start:')
 
         self.stream = Stream(self.auth, self.listener)
         self.stream.userstream(_with='user',
@@ -26,7 +26,6 @@ class TwitterStream(TwitterBase):
     
     def stop(self):
         logging.info('stop:')
-        super(Daemon, self).stop()
         self.stream.disconnect()
 
 

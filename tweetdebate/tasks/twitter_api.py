@@ -11,11 +11,11 @@ class TwitterAPI(TwitterBase):
         TwitterBase.__init__(self)
         self.api = tweepy.API(self.auth)
 
-    def update_status(self, status):
-        return self.api.update_status(status)
+    def update_status(self, status, in_reply_to_status_id = None):
+        return self.api.update_status(status, in_reply_to_status_id)
 
     def get_last_tweet(self):
-        return self.api.user_timeline(id = self.api.me().id, count = 1)[0].text
+        return self.api.user_timeline(id = self.api.me().id, count = 1)[0]
 
     def delete_all_tweets(self):
         if "Development" in os.getenv('SERVER_SOFTWARE'):

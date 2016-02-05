@@ -1,19 +1,14 @@
 import datetime
 import logging
-import os
 import re
-import time
 
 from flask import Blueprint
 from flask import request
 from tweetdebate.models import Question
 from tweetdebate.models import State
-from tweetdebate.models import User
-from tweetdebate.models import Vote
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from tweetdebate.tasks.twitter_stream import TwitterStream
 from tweepy import TweepError
-from tweepy.streaming import StreamListener
 
 mod = Blueprint('tasks', __name__)
 
@@ -79,111 +74,3 @@ def twitter_stream():
     else:
         twitter_stream.stop()
         return 'Stopped Twitter Stream', 200
-
-class TwitterStreamListener(StreamListener):
-    """ A listener handles tweets that are received from the stream.
-    """
-    def on_data(self, data):
-        logging.info("on_data: %s", str(data))
-        self.parse_data(data)
-        return True
-
-    def on_error(self, status):
-        logging.info("on_error: %s", str(status))
-
-    def parse_data(self, data):
-        # Process replies
-        if "in_reply_to_status_id" in data:
-            current_question = Question.get_current_question()
-            reply_status_id = str(data["in_reply_to_status_id"])
-
-            # Only acknowledge replies to current question
-            if reply_status_id == current_question.twitterid:
-                screen_name = data["user"]["screen_name"]
-                state_abbreviation = self.get_state_from_string(data["text"])
-                party = self.get_party_from_string_using_question(
-                    data["text"], 
-                    current_question)
-                
-                # Only add vote for question if user vote was valid
-                if self.add_vote_for_screenname(current_question, 
-                                                str(data["id"]),
-                                                state_abbreviation,
-                                                party,
-                                                screen_name):
-                    self.add_vote_for_question(party,
-                                              state_abbreviation,
-                                              current_question)
-
-    def add_vote_for_screenname(self,
-                                question,
-                                replyid,
-                                state_abbreviation,
-                                party,
-                                screen_name):
-        # Require valid state and party to vote
-        if state_abbreviation == None or party == None:
-            return False
-       
-        # Require new user or user never voted on this question
-        user = User.query_by_userid(screen_name).get()        
-        if user == None or \
-                user.votes[-1].question.get().key.id() != question.key.id():
-
-                # Add vote for user
-                User.add_user_vote(user, screen_name, Vote(
-                    question = question.key,
-                    replyid = replyid,
-                    state = state_abbreviation,
-                    party = party
-                ))
-                return True
-        else:
-            return False
-
-    def add_vote_for_question(self, party, state_abbreviation, question):
-        # Add vote for question
-        # @TODO: could optimize to O(1) by pre-populating states
-        states = question.state_scores
-        for state in states:
-            if state.state_abbreviation == state_abbreviation:
-                state.party_score_votes[party] += 1
-                question.put()
-                return
-
-        # State had no votes previously
-        states.append(State(
-            state_abbreviation = state_abbreviation,
-            party_score_votes = [0, 0],
-            party_score_sway = [0, 0] 
-        ))
-
-        states[-1].party_score_votes[party] += 1
-        question.put()
-
-    def get_state_from_string(self, string):
-        states = ["AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC",
-                "FM","FL","GA","GU","HI","ID","IL","IN","IA","KS",
-                "KY","LA","ME","MH","MD","MA","MI","MN","MS","MO",
-                "MT","NE","NV","NH","NJ","NM","NY","NC","ND","MP",
-                "OH","OK","OR","PW","PA","PR","RI","SC","SD","TN",
-                "TX","UT","VT","VI","VA","WA","WV","WI","WY"]
-        string = string.upper()
-        regex = re.compile(r'\b(' + '|'.join(states) + r')\b')
-        result = regex.findall(string)
-        if len(result) == 1 and ("#" + result[0] + " ") in string:
-            # Can only have one state and must be prefixed by "#"
-            return result[0]
-        
-        return None
-
-    def get_party_from_string_using_question(self, string, question):
-        question_party = question.party
-        string = string.lower()
-        if "#yes " in string and "#no " not in string:
-            return question.party
-        elif "#no " in string and "#yes " not in string:
-            return  1 - question_party
-
-        # Not vote or vote was both #yes and #no
-        return None

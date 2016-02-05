@@ -1,8 +1,11 @@
 """
 test_views.py - tests views
 """
+from threading import Thread
 import json
 import os
+import sys
+import time
 
 from flask.ext.api import status
 from google.appengine.ext import ndb
@@ -11,8 +14,9 @@ from appengine_fixture_loader.loader import load_fixture
 from tweetdebate.models import Question
 from tweetdebate.models import State
 from tweetdebate.models import User
+from tweetdebate.views import backend
 from tweetdebate.views import tasks
-from tweetdebate.views.tasks import TwitterStreamListener
+from tweetdebate.views.backend import TwitterStreamListener
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from test_base import TestBase
 
@@ -23,30 +27,49 @@ class TestView(TestBase):
     def tearDown(self):
         self.testbed.deactivate()
 
+    def _start_twitter_stream(self):
+        backend.start_twitter_stream()
+
     def test_view_tasks_twitter_stream(self):
-        return # TODO make compatible with App Engine
-
-
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
 
-        # Go to new question and test valid votes
-        reponse = self.app.get('/tasks/twitter_stream' \
-                               '?action=start')
-        assert "Started Twitter Stream" in reponse.data
-        assert status.is_success(reponse.status_code) == True
+        # Start new thread with Twitter Stream listener
+        stream_thread = Thread(target=self._start_twitter_stream)
+        stream_thread.daemon = True
+        stream_thread.start()
 
-        daemon_pid = open(os.path.dirname(os.path.realpath(__file__)) + \
-                          "/../daemon-twitterstream.pid", "r").read
-        print(daemon_pid)
+        # Delete all previous tweets before proceeding
+        twitter_api = TwitterAPI()
+        twitter_api.delete_all_tweets()
 
-        reponse = self.app.get('/tasks/twitter_stream' \
-                               '?action=stop')
-        assert "Stopped Twitter Stream" in reponse.data
-        assert status.is_success(reponse.status_code) == True
+        reponse = \
+            self.app.get('/tasks/twitter_post_status' \
+                '?question_cadence_minutes=1&post_to_twitter=True')
+        current_question = Question.get_current_question()
+
+        # Post reply
+        twitter_status_id = twitter_api.get_last_tweet().id
+        twitter_api.update_status("#yes for #WA", twitter_status_id)
+
+        # Wait for stream to be updated
+        time.sleep(2)
+
+        # Test to see reply has been registered
+        ndb.get_context().clear_cache()
+        users = User.get_all()
+        assert len(users) == 1
+
+        current_question = Question.get_current_question()
+        assert len(current_question.state_scores) == 1
+        assert current_question.state_scores[0].state_abbreviation == "WA"
+        assert current_question.state_scores[0].party_score_votes[0] == 1
+        assert current_question.state_scores[0].party_score_votes[1] == 0
 
     def test_view_tasks_twitter_stream_listener_on_data(self):
+        return
+
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions_no_votes.json', 
                         kind={'Question': Question,'State': State})
@@ -266,6 +289,11 @@ class TestView(TestBase):
             get_party_from_string_using_question(test_text, current_question)
         assert result == 1 - current_question_party # Inverse current party
 
+        test_text = "I disagree #no"
+        result = twitter_stream_listener. \
+            get_party_from_string_using_question(test_text, current_question)
+        assert result == 1 - current_question_party # Inverse current party
+
         test_text = "#YeS I agree"
         result = twitter_stream_listener. \
             get_party_from_string_using_question(test_text, current_question)
@@ -302,6 +330,10 @@ class TestView(TestBase):
         result = twitter_stream_listener.get_state_from_string(test_text)
         assert result == "AL"
 
+        test_text = "#no I agree #AL"
+        result = twitter_stream_listener.get_state_from_string(test_text)
+        assert result == "AL"
+
         test_text = "#ALAL #no I agree"
         result = twitter_stream_listener.get_state_from_string(test_text)
         assert result == None
@@ -319,9 +351,6 @@ class TestView(TestBase):
         assert result == None
 
     def test_view_tasks_twitter_post_status(self):
-        # TODO: allow for twitter based tests when done with others 
-        return;
-
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
@@ -339,9 +368,8 @@ class TestView(TestBase):
         assert "Posted new status" in reponse.data
         assert status.is_success(reponse.status_code) == True
 
-
         # Ensure Twitter timeline has been updated
-        twitter_status = twitter_api.get_last_tweet()
+        twitter_status = twitter_api.get_last_tweet().text
         question_entity = Question.get_current_question()
         assert twitter_status == question_entity.question_text
 
