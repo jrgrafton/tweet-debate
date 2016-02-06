@@ -147,14 +147,26 @@ class TwitterStreamListener(StreamListener):
         return None
 
     def get_party_from_string_using_question(self, string, question):
-        string = string.lower()
         logging.info("get_party_from_string_using_question: %s" % string)
+        string = string.lower()
         if ("#yes " in string or string.endswith("#yes")) and \
            ("#no " not in string and not string.endswith("#no")):
             return question.party
         elif ("#no " in string or string.endswith("#no")) and \
            ("#yes " not in string and not string.endswith("#yes")):
             return  1 - question.party
+
+        # Not vote or vote was both #yes and #no
+        return None
+
+    def get_sway_from_string(self, string):
+        logging.info("get_sway_from_string: %s" % string)
+        string = string.upper()
+        m = re.search('.*#SWAY([0-9]+).*', string)
+        if m != None:
+            # More than one SWAY - ignore both
+            if string.count("#SWAY") == 1:
+                return int(m.group(1))
 
         # Not vote or vote was both #yes and #no
         return None

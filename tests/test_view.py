@@ -350,6 +350,37 @@ class TestView(TestBase):
         result = twitter_stream_listener.get_state_from_string(test_text)
         assert result == None
 
+    def test_view_tasks_twitter_stream_listener_get_sway(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
+
+        twitter_stream_listener = TwitterStreamListener()
+
+        test_text = "#SWAY20 #SWAY10"
+        result = twitter_stream_listener.get_sway_from_string(test_text)
+        assert result == None
+
+        test_text = "NO #SWAY MAN"
+        result = twitter_stream_listener.get_sway_from_string(test_text)
+        assert result == None
+
+        test_text = "NO SWAY MAN"
+        result = twitter_stream_listener.get_sway_from_string(test_text)
+        assert result == None
+
+        test_text = "NO #SWAY20 #SWAY MAN"
+        result = twitter_stream_listener.get_sway_from_string(test_text)
+        assert result == None
+
+        test_text = "#SWAY2 Testing"
+        result = twitter_stream_listener.get_sway_from_string(test_text)
+        assert result == 2
+
+        test_text = "Testing #SWAY200"
+        result = twitter_stream_listener.get_sway_from_string(test_text)
+        assert result == 200
+
     def test_view_tasks_twitter_post_status(self):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 

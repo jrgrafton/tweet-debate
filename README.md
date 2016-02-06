@@ -23,7 +23,7 @@ See the README file for directions. You'll need python 2.7 and [pip 1.4 or later
 4. Enable Sockets and SSL
 
  * Create backups of ```/path-to-gae-sdk/google/appengine/tools/devappserver2/python/sandbox.py``` and ```/path-to-gae-sdk/google/appengine/dis27/socket.py```
- * Add "_ssl" and "_socket" keys to the dictionary _WHITE_LIST_C_MODULES in ```/path-to-gae-sdk/google/appengine/tools/devappserver2/python/sandbox.py```
+ * Add "\_ssl" and "\_socket" keys to the dictionary \_WHITE\_LIST\_C\_MODULES in ```/path-to-gae-sdk/google/appengine/tools/devappserver2/python/sandbox.py```
  * Replace ```/path-to-gae-sdk/google/appengine/dis27/socket.py``` with the socket.py file from your Python framework.
 
 5. Run this project locally from the command line:
@@ -36,6 +36,9 @@ Visit the application [http://localhost:8080](http://localhost:8080)
 
 See [the development server documentation](https://developers.google.com/appengine/docs/python/tools/devserver)
 for options when running dev_appserver.
+
+## Testing
+**sh runtests.sh** - All tests must pass before pushing to master
 
 ## Deploy
 To deploy the application:
