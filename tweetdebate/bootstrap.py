@@ -44,6 +44,7 @@ class Bootstrap(object):
             state_abbreviation = state["state_abbreviation"]
             state = State(
                 state_abbreviation = state_abbreviation,
-                party_score_votes = [0, 0]
+                party_score_votes = [0, 0],
+                party_score_sway = [0, 0]
             )
             state.put()

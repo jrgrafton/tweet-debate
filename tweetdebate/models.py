@@ -33,16 +33,28 @@ class State(ndb.Model):
     # Updates state scores based on result of a question
     @classmethod
     def update_state_scores(cls, question_state_scores):
+        # Loops over each state that was voted for in this question
         for question_state_score in question_state_scores:
             state = cls.query(cls.state_abbreviation == \
                     question_state_score.state_abbreviation).get()
-            if question_state_score.party_score_votes[0] > \
-                    question_state_score.party_score_votes[1]:
-                state.party_score_votes[0]+=1
-            elif question_state_score.party_score_votes[1] > \
-                    question_state_score.party_score_votes[0]:
-                state.party_score_votes[1]+=1
+            total_scores = []
+            total_scores.append(question_state_score.party_score_votes[0] + \
+                              question_state_score.party_score_sway[0])
+            total_scores.append(question_state_score.party_score_votes[1] + \
+                              question_state_score.party_score_sway[1])
+
             # Ties get no points
+            if total_scores[0] > total_scores[1]:
+                state.party_score_votes[0] += 1
+            elif total_scores[1] > total_scores[0]:
+                state.party_score_votes[1] += 1
+            
+            # Always tally total sway for a state
+            state.party_score_sway[0] += \
+                question_state_score.party_score_sway[0]
+            state.party_score_sway[1] += \
+                question_state_score.party_score_sway[1]
+
             state.put()
 
 class Question(ndb.Model):
@@ -79,6 +91,7 @@ class Vote(ndb.Model):
     replyid = ndb.StringProperty(indexed=False)
     state = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
+    sway_points = ndb.IntegerProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
 
     @classmethod
@@ -104,9 +117,12 @@ class User(ndb.Model):
         if user is None:
             user = User(
                 userid = userid,
-                votes = [vote]
+                votes = [vote],
+                # Can use sway points upon creation
+                sway_points = (50 - vote.sway_points)
             )
             user.put()
         else:
             user.votes.append(vote)
+            user.sway_points -= vote.sway_points
             user.put()

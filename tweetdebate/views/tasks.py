@@ -35,6 +35,7 @@ def twitter_post_status():
             except TweepError as e:
                 pass  #TODO: do something - message to monitoring?
 
+        # Update overall state scores if this isn't the first question
         if current_question is not None:
             current_question.end_time = datetime.datetime.now()
             current_question.put()
@@ -56,21 +57,3 @@ def __is_time_for_new_question(question_cadence_minutes):
         next_question_start_time = question_start_time + \
             datetime.timedelta(minutes=question_cadence_minutes)
         return datetime.datetime.now() > next_question_start_time
-
-@mod.route("/tasks/twitter_stream")
-def twitter_stream():
-    """ Activate Twitter Stream Daemon
-    """
-    # Start or stop stream?
-    action = request.args.get('action', "start")
-
-    pid_file = os.path.dirname(os.path.realpath(__file__)) + \
-            "/../../daemon-twitterstream.pid"
-    twitter_stream = TwitterStream(TwitterStreamListener())
-
-    if action == "start":
-        twitter_stream.start()
-        return 'Started Twitter Stream', 200
-    else:
-        twitter_stream.stop()
-        return 'Stopped Twitter Stream', 200

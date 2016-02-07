@@ -72,22 +72,34 @@ class TwitterStreamListener(StreamListener):
                 party = self.get_party_from_string_using_question(
                     data["text"], 
                     current_question)
-                
+                sway_points = self.get_sway_from_string(data["text"])
+                user = User.query_by_userid(screen_name).get()
+
+                # Cap sway points
+                if user != None:
+                    if user.sway_points < sway_points:
+                        sway_points = user.sway_points
+
                 # Only add vote for question if user vote was valid
                 if self.add_vote_for_screenname(current_question, 
                                                 str(data["id"]),
                                                 state_abbreviation,
                                                 party,
+                                                sway_points,
                                                 screen_name):
+                    
+                    # Add vote for question if vote was valid
                     self.add_vote_for_question(party,
-                                              state_abbreviation,
-                                              current_question)
+                                               sway_points,
+                                               state_abbreviation,
+                                               current_question)
 
     def add_vote_for_screenname(self,
                                 question,
                                 replyid,
                                 state_abbreviation,
                                 party,
+                                sway_points,
                                 screen_name):
         # Require valid state and party to vote
         if state_abbreviation == None or party == None:
@@ -99,23 +111,31 @@ class TwitterStreamListener(StreamListener):
                 user.votes[-1].question.get().key.id() != question.key.id():
 
                 # Add vote for user
-                User.add_user_vote(user, screen_name, Vote(
-                    question = question.key,
-                    replyid = replyid,
-                    state = state_abbreviation,
-                    party = party
-                ))
+                User.add_user_vote(user, 
+                                   screen_name,
+                                   Vote(
+                                        question = question.key,
+                                        replyid = replyid,
+                                        state = state_abbreviation,
+                                        party = party,
+                                        sway_points = sway_points
+                                    ))
                 return True
         else:
             return False
 
-    def add_vote_for_question(self, party, state_abbreviation, question):
+    def add_vote_for_question(self,
+                              party,
+                              sway_points,
+                              state_abbreviation,
+                              question):
         # Add vote for question
         # @TODO: could optimize to O(1) by pre-populating states
         states = question.state_scores
         for state in states:
             if state.state_abbreviation == state_abbreviation:
                 state.party_score_votes[party] += 1
+                state.party_score_sway[party] += sway_points
                 question.put()
                 return
 
@@ -127,6 +147,7 @@ class TwitterStreamListener(StreamListener):
         ))
 
         states[-1].party_score_votes[party] += 1
+        states[-1].party_score_sway[party] += sway_points
         question.put()
 
     def get_state_from_string(self, string):
@@ -169,4 +190,4 @@ class TwitterStreamListener(StreamListener):
                 return int(m.group(1))
 
         # Not vote or vote was both #yes and #no
-        return None
+        return 0
