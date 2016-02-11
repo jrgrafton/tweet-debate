@@ -92,6 +92,7 @@ class Vote(ndb.Model):
     state = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
     sway_points = ndb.IntegerProperty(indexed=False)
+    winning_vote = ndb.BooleanProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
 
     @classmethod
@@ -101,7 +102,7 @@ class Vote(ndb.Model):
 class User(ndb.Model):
     """Models an individual User"""
     userid = ndb.StringProperty()
-    sway_points = ndb.IntegerProperty(indexed=False, default=50) # Default 50 swing points
+    sway_points = ndb.IntegerProperty(indexed=False, default=50)
     votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
 
     @classmethod

@@ -16,6 +16,7 @@ from tweetdebate.models import State
 from tweetdebate.models import User
 from tweetdebate.views import backend
 from tweetdebate.views import tasks
+from tweetdebate.views.tasks import sway_points
 from tweetdebate.views.backend import TwitterStreamListener
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from test_base import TestBase
@@ -506,6 +507,57 @@ class TestView(TestBase):
         result = \
             tasks.__dict__["__is_time_for_new_question"](60*24*365*100)
         assert result == True
+
+    def test_view_tasks_attribute_sway_points_for_user(self):
+        load_fixture('tests/questions_unstarted.json', 
+                        kind={'Question': Question})
+        current_question = Question.get_current_question()
+        vote_current = Vote(
+            question = current_question.key,
+            replyid = "123",
+            state = "CA",
+            party = 0, # Wrong party
+            sway_points = 20,
+            winning_vote = None
+        )
+        vote_previous = Vote(
+            question = current_question.key,
+            replyid = "123",
+            state = "CA",
+            party = 0, # Wrong party
+            sway_points = 20,
+            winning_vote = True
+        )
+        user = User(
+            userid = "jrgrafton",
+            votes = [vote_current],
+            # Can use sway points upon creation
+            sway_points = 30
+        )
+
+        # Vote - loosing
+        tasks.__dict__\
+            ["__attribute_sway_points_for_user"](current_question, user)
+        assert user.sway_points == user.sway_points + sway_points.submit_answer
+
+        # Vote - winning
+        vote_one.party = 1
+        tasks.__dict__\
+            ["__attribute_sway_points_for_user"](current_question, user)
+        assert user.sway_points = user.sway_points + \
+                                  sway_points.submit_answer + \
+                                  sway_points.submit_winning_answer + \
+                                  (vote_one.sway_points * sway_points.refund)
+
+        # Vote - winning + streak
+        user.votes.insert(0, vote_previous)
+        tasks.__dict__\
+            ["__attribute_sway_points_for_user"](current_question, user)
+        assert user.sway_points = user.sway_points + \
+                                  sway_points.submit_answer + \
+                                  sway_points.submit_winning_answer + \
+                                  sway_points.streak_bonus + \
+                                  (vote_one.sway_points * sway_points.refund)
 
     def test_404(self):
         result = self.app.get('/missing')
