@@ -19,6 +19,11 @@ from tweetdebate.tasks.twitter_stream import TwitterStream
 mod = Blueprint('backend', __name__)
 twitter_stream = None
 
+sway_points = {
+    "rewteet_poll" : 1,
+    "presidential_candidate" : 100
+}
+
 @mod.route("/_ah/start")
 def start_twitter_stream():
     # TODO: if not DEV email admin to tell of startup
@@ -61,6 +66,13 @@ class TwitterStreamListener(StreamListener):
         # Process replies
         logging.info("parse_data: %s" % str(data))
 
+        # Retweeted poll
+        """if "quoted_tweet" in data:
+            target_id = str(data["target_object"]["id"])
+            screen_name = data["source"]["screen_name"]
+            self.process_retweet_from_screename(target_id, screen_name)"""
+
+        # Replied to status
         if "in_reply_to_status_id" in data:
             current_question = Question.get_current_question()
             reply_status_id = str(data["in_reply_to_status_id"])
@@ -93,6 +105,15 @@ class TwitterStreamListener(StreamListener):
                                                sway_points,
                                                state_abbreviation,
                                                current_question)
+    
+    def process_retweet_from_screename(self, target_id, screen_name):
+        user = User.query_by_userid(screen_name).get()
+        # Add user if they don't exist
+        if user == None:
+            user = User(userid = screen_name)
+            user.put()
+        
+        user.sway_points += sway_points["rewteet_poll"]
 
     def add_vote_for_screenname(self,
                                 question,

@@ -105,7 +105,7 @@ class Vote(ndb.Model):
 
 class User(ndb.Model):
     """Models an individual User"""
-    userid = ndb.StringProperty()
+    userid = ndb.StringProperty() #@TODO: change this to screen_name
     sway_points = ndb.IntegerProperty(indexed=False, default=50)
     votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
 
