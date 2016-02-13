@@ -1,7 +1,11 @@
 {
     "questions": [
         {
+           "-------": "----------------REPUBLICAN QUOTES-----------------------",
+
+
             "image": null,
+<<<<<<< Updated upstream
             "question_text": "\"A complete shutdown of Muslims entering the United States\" yes no why?",
             "party": 0
         },
@@ -9,7 +13,38 @@
             "image": null,
             "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? yes no why?",
             "party": 1
+=======
+            "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
+            "party": 0,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "republican quote",
+            "party": 0,
+            "comment": "Origin of the quote"
+        },
+
+
+
+
+        {
+            "-------": "----------------DEMOCRAT QUOTES------------------------",
+
+
+            "image": null,
+            "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? #yes #no why?",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "democratic quote",
+            "party": 0,
+            "comment": "Origin of the quote"
+>>>>>>> Stashed changes
         }
+
     ],
     "states": [
         {"state_abbreviation":"AL"},
