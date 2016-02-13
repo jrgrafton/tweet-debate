@@ -22,6 +22,11 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/speech_bubbles.css') }}">
     <style type="text/css">
+
+      body {
+          background: url("{{ url_for('static', filename='images/background_tile.png') }}") repeat;
+      }
+
       .main-logo {
         width: 20pt;
         height: 20pt;
@@ -38,6 +43,11 @@
       }
       .candidate-avatar {
         width: 60%;
+        display: block;
+        margin: 0 auto;
+      }
+      .candidate-avatar-sm {
+        width: 20%;
         display: block;
         margin: 0 auto;
       }
@@ -75,8 +85,8 @@
                 <ul class="nav navbar-nav navbar-right">
                   <li class="clickable">
                     <a href="#">
-                      <img
-                          src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-link.png" alt="Sign in with Twitter">
+                      <img src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-link.png" alt="Sign in with Twitter">
+                      </img>
                     </a>
                   </li>
                 </ul>
@@ -102,16 +112,17 @@
             </div>
           </div>
 
-          <div id="map_container" class="container" style="display: block">
-            <div id="map"></div>
-          </div>
-
           <!-- Avatar and speech bubble for sm and xs. -->
           <div class="visible-sm-block visible-xs-block">
-            <div class="bubble bubble-bottom-right speech-buuble-text-main">
+            <div class="bubble bubble-bottom-center speech-buuble-text-main">
               The threat to our liberty from Wasington has never been greater.
             </div>
-            <img class="candidate-avatar img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" style="" alt="A candidate">
+            <img class="candidate-avatar-sm img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" style="" alt="A candidate">
+            </img>
+          </div>
+
+          <div id="map_container" class="container" style="display: block">
+            <div id="map"></div>
           </div>
 
           <div>
