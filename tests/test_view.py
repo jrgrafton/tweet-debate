@@ -14,6 +14,7 @@ from appengine_fixture_loader.loader import load_fixture
 from tweetdebate.models import Question
 from tweetdebate.models import State
 from tweetdebate.models import User
+from tweetdebate.models import Vote
 from tweetdebate.views import backend
 from tweetdebate.views import tasks
 from tweetdebate.views.tasks import sway_points
@@ -509,17 +510,9 @@ class TestView(TestBase):
         assert result == True
 
     def test_view_tasks_attribute_sway_points_for_user(self):
-        load_fixture('tests/questions_unstarted.json', 
-                        kind={'Question': Question})
+        load_fixture('tests/questions_no_votes.json', 
+                        kind={'Question': Question,'State': State})
         current_question = Question.get_current_question()
-        vote_current = Vote(
-            question = current_question.key,
-            replyid = "123",
-            state = "CA",
-            party = 0, # Wrong party
-            sway_points = 20,
-            winning_vote = None
-        )
         vote_previous = Vote(
             question = current_question.key,
             replyid = "123",
@@ -528,36 +521,51 @@ class TestView(TestBase):
             sway_points = 20,
             winning_vote = True
         )
+        vote_current = Vote(
+            question = current_question.key,
+            replyid = "123",
+            state = "CA",
+            party = 0, # Wrong party
+            sway_points = 20,
+            winning_vote = None
+        )
         user = User(
             userid = "jrgrafton",
             votes = [vote_current],
             # Can use sway points upon creation
             sway_points = 30
+        
         )
 
         # Vote - loosing
+        original_sway_points = user.sway_points
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
-        assert user.sway_points == user.sway_points + sway_points.submit_answer
+        assert user.sway_points == original_sway_points + \
+                                   sway_points["submit_answer"]
 
         # Vote - winning
-        vote_one.party = 1
+        original_sway_points = user.sway_points
+        vote_current.party = 1
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
-        assert user.sway_points = user.sway_points + \
-                                  sway_points.submit_answer + \
-                                  sway_points.submit_winning_answer + \
-                                  (vote_one.sway_points * sway_points.refund)
+        assert user.sway_points == original_sway_points + \
+                                  sway_points["submit_answer"] + \
+                                  sway_points["submit_winning_answer"] + \
+                                  int(vote_current.sway_points * \
+                                      sway_points["refund"])
 
         # Vote - winning + streak
+        original_sway_points = user.sway_points
         user.votes.insert(0, vote_previous)
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
-        assert user.sway_points = user.sway_points + \
-                                  sway_points.submit_answer + \
-                                  sway_points.submit_winning_answer + \
-                                  sway_points.streak_bonus + \
-                                  (vote_one.sway_points * sway_points.refund)
+        assert user.sway_points == original_sway_points + \
+                                  sway_points["submit_answer"] + \
+                                  sway_points["submit_winning_answer"] + \
+                                  sway_points["streak_bonus"] + \
+                                  int(vote_current.sway_points * \
+                                      sway_points["refund"])
 
     def test_404(self):
         result = self.app.get('/missing')
