@@ -36,7 +36,7 @@ function buildMap(element, width) {
   element.height(height);
   element.empty();
   element.usmap({
-    'showLabels': true,
+    'showLabels': false,
     'stateStyles': {
       fill: '#025',
       "stroke-width": 1,
