@@ -438,7 +438,7 @@ class TestView(TestBase):
             question = current_question.key,
             replyid = "123",
             state_abbreviation = "CA",
-            party = 0,
+            party = 1,
             sway_points = 20
         )
         user = User(
@@ -448,6 +448,7 @@ class TestView(TestBase):
             sway_points = 30
         )
         user.put()
+        original_sway_points = user.sway_points # Store initial sway points
 
         # Delete all previous tweets before proceeding
         twitter_api = TwitterAPI()
@@ -461,6 +462,13 @@ class TestView(TestBase):
         assert current_question.twitterid != None
         assert "Posted new status" in reponse.data
         assert status.is_success(reponse.status_code) == True
+
+        # Ensure user had sway points returned
+        assert user.sway_points == original_sway_points + \
+                          sway_points["submit_answer"] + \
+                          sway_points["submit_winning_answer"] + \
+                          int(vote_current.sway_points * \
+                              sway_points["refund"])
 
         # Ensure Twitter timeline has been updated
         twitter_status = twitter_api.get_last_tweet().text
