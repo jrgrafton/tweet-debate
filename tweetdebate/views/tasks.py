@@ -44,12 +44,13 @@ def twitter_post_status():
 
         # Update overall state scores if this isn't the first question
         if current_question is not None:
+            State.update_state_scores(current_question.state_scores)
+
             users = User.get_all()
             for user in users:
                 __attribute_sway_points_for_user(current_question, user)
             current_question.end_time = datetime.datetime.now()
             current_question.put()
-            State.update_state_scores(current_question.state_scores)
         
         next_question.start_time = datetime.datetime.now()
         next_question.put()
@@ -75,8 +76,12 @@ def __attribute_sway_points_for_user(current_question, user):
     if len(user.votes) > 0 \
             and user.votes[-1].question.id() == current_question.key.id():
         user.sway_points += sway_points["submit_answer"]
+        
         # Voted for winning party
-        if user.votes[-1].party == current_question.party:
+        state = State.get_state_by_abbreviation(\
+                    user.votes[-1].state_abbreviation)
+
+        if user.votes[-1].party == state.last_winning_party:
             user.votes[-1].winning_vote = True
             user.sway_points += sway_points["submit_winning_answer"]
              # Voted for winning party twice in a row

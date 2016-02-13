@@ -116,7 +116,7 @@ class TwitterStreamListener(StreamListener):
                                    Vote(
                                         question = question.key,
                                         replyid = replyid,
-                                        state = state_abbreviation,
+                                        state_abbreviation = state_abbreviation,
                                         party = party,
                                         sway_points = sway_points
                                     ))

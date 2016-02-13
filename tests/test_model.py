@@ -28,7 +28,7 @@ class TestModel(TestBase):
         User.add_user_vote(None, "jrgrafton_test", Vote(
             question = current_question_entity.key,
             replyid = "692368266292023296",
-            state = "CA",
+            state_abbreviation = "CA",
             party = 0,
             sway_points = 40
         ))
@@ -40,7 +40,7 @@ class TestModel(TestBase):
         assert user_entity[0].userid == "jrgrafton_test"
         assert user_entity[0].votes[0].question == current_question_entity.key
         assert user_entity[0].votes[0].replyid == "692368266292023296"
-        assert user_entity[0].votes[0].state == "CA"
+        assert user_entity[0].votes[0].state_abbreviation == "CA"
         assert user_entity[0].votes[0].party == 0
 
         # Ensure a reply to a different question is tallied
@@ -48,7 +48,7 @@ class TestModel(TestBase):
         User.add_user_vote(user_entity[0], "jrgrafton_test", Vote(
             question = next_question_entity.key,
             replyid = "692368266292023297",
-            state = "WA",
+            state_abbreviation = "WA",
             party = 1,
             sway_points = 10
         ))
@@ -62,14 +62,14 @@ class TestModel(TestBase):
         # Verify integrity of new vote
         assert user_entity[0].votes[1].question == next_question_entity.key
         assert user_entity[0].votes[1].replyid == "692368266292023297"
-        assert user_entity[0].votes[1].state == "WA"
+        assert user_entity[0].votes[1].state_abbreviation == "WA"
         assert user_entity[0].votes[1].party == 1
 
         # Verify integrity of old vote
         assert user_entity[0].userid == "jrgrafton_test"
         assert user_entity[0].votes[0].question == current_question_entity.key
         assert user_entity[0].votes[0].replyid == "692368266292023296"
-        assert user_entity[0].votes[0].state == "CA"
+        assert user_entity[0].votes[0].state_abbreviation == "CA"
         assert user_entity[0].votes[0].party == 0
         
     def test_model_state(self):
@@ -86,16 +86,28 @@ class TestModel(TestBase):
         assert state_entity.party_score_votes[1] == 1
         assert state_entity.party_score_sway[0] == 5
         assert state_entity.party_score_sway[1] == 500
+        assert state_entity.last_winning_party == 1
 
         state_entity = State.get_state_by_abbreviation("WA")
         assert state_entity.party_score_votes[0] == 0
         assert state_entity.party_score_votes[1] == 1
         assert state_entity.party_score_sway[0] == 50
         assert state_entity.party_score_sway[1] == 100
+        assert state_entity.last_winning_party == 1
 
+        # What happens when state draws?
+        state_entity = State.get_state_by_abbreviation("TX")
+        assert state_entity.party_score_votes[0] == 0
+        assert state_entity.party_score_votes[1] == 0
+        assert state_entity.party_score_sway[0] == 80
+        assert state_entity.party_score_sway[1] == 70
+        assert state_entity.last_winning_party == None
+
+        # What happens when state hasn't been voted on?
         state_entity = State.get_state_by_abbreviation("NY")
         assert state_entity.party_score_votes[0] == 0
         assert state_entity.party_score_votes[1] == 0
+        assert state_entity.last_winning_party == None
 
         assert State.is_valid_state("CA") == True
         assert State.is_valid_state("WA") == True

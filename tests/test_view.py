@@ -213,7 +213,7 @@ class TestView(TestBase):
         assert len(user.votes) == 1
         assert user.votes[0].question.get().key == current_question.key
         assert user.votes[0].replyid == "123"
-        assert user.votes[0].state == "CA"
+        assert user.votes[0].state_abbreviation == "CA"
         assert user.votes[0].party == 0
         assert user.votes[0].sway_points == 100
 
@@ -242,7 +242,7 @@ class TestView(TestBase):
         assert len(user.votes) == 1
         assert user.votes[0].question.get().key == current_question.key
         assert user.votes[0].replyid == "123"
-        assert user.votes[0].state == "WA"
+        assert user.votes[0].state_abbreviation == "WA"
         assert user.votes[0].party == 1
         assert user.votes[0].sway_points == 50
 
@@ -265,7 +265,7 @@ class TestView(TestBase):
         assert len(user.votes) == 2
         assert user.votes[1].question.get().key == current_question.key
         assert user.votes[1].replyid == "124"
-        assert user.votes[1].state == "WA"
+        assert user.votes[1].state_abbreviation == "WA"
         assert user.votes[1].party == 1
         assert user.votes[1].sway_points == 10
 
@@ -431,6 +431,23 @@ class TestView(TestBase):
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
+        current_question = Question.get_current_question()
+
+        # Add user with vote so we can test sway points
+        vote_current = Vote(
+            question = current_question.key,
+            replyid = "123",
+            state_abbreviation = "CA",
+            party = 0,
+            sway_points = 20
+        )
+        user = User(
+            userid = "jrgrafton",
+            votes = [vote_current],
+            # Used 20 sway points upon creation
+            sway_points = 30
+        )
+        user.put()
 
         # Delete all previous tweets before proceeding
         twitter_api = TwitterAPI()
@@ -510,22 +527,23 @@ class TestView(TestBase):
         assert result == True
 
     def test_view_tasks_attribute_sway_points_for_user(self):
-        load_fixture('tests/questions_no_votes.json', 
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions.json', 
                         kind={'Question': Question,'State': State})
         current_question = Question.get_current_question()
         vote_previous = Vote(
             question = current_question.key,
             replyid = "123",
-            state = "CA",
-            party = 0, # Wrong party
+            state_abbreviation = "CA",
+            party = 0,
             sway_points = 20,
             winning_vote = True
         )
         vote_current = Vote(
             question = current_question.key,
             replyid = "123",
-            state = "CA",
-            party = 0, # Wrong party
+            state_abbreviation = "CA",
+            party = 0,
             sway_points = 20,
             winning_vote = None
         )
@@ -534,17 +552,20 @@ class TestView(TestBase):
             votes = [vote_current],
             # Can use sway points upon creation
             sway_points = 30
-        
         )
 
-        # Vote - loosing
+        # So that we can determine if user had winning vote
+        State.update_state_scores(current_question.state_scores)
+
+        # Vote - loosing (party 0 has least votes for this question and state)
         original_sway_points = user.sway_points
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
+
         assert user.sway_points == original_sway_points + \
                                    sway_points["submit_answer"]
 
-        # Vote - winning
+        # Vote - winning (party 1 has most votes for this question and state)
         original_sway_points = user.sway_points
         vote_current.party = 1
         tasks.__dict__\

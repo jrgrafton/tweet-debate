@@ -49,6 +49,12 @@
                 "state_abbreviation" : "NY",
                 "party_score_votes": [100, 100],
                 "party_score_sway": [0, 0]
+            },
+            {
+                "__kind__": "State",
+                "state_abbreviation" : "TX",
+                "party_score_votes": [70, 80],
+                "party_score_sway": [80, 70]
             }
         ]
     },

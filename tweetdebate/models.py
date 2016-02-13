@@ -3,7 +3,7 @@ import logging
 from enum import Enum
 from google.appengine.ext import ndb
 
-# Integer representations for parties
+# @TODO: reference ENUM values rather than integers
 class Party(Enum):
     republication = 0
     democrat = 1
@@ -13,9 +13,11 @@ class State(ndb.Model):
     state_abbreviation = ndb.StringProperty()
     party_score_votes = ndb.IntegerProperty(indexed=False, repeated=True)
     party_score_sway = ndb.IntegerProperty(indexed=False, repeated=True)
+    last_winning_party = ndb.IntegerProperty(indexed=False, default=None)
 
     @classmethod
     def get_state_by_abbreviation(cls, state_abbreviation):
+        state_abbreviation = state_abbreviation.upper()
         return cls.query(cls.state_abbreviation == state_abbreviation).get()
 
     @classmethod
@@ -45,9 +47,11 @@ class State(ndb.Model):
 
             # Ties get no points
             if total_scores[0] > total_scores[1]:
-                state.party_score_votes[0] += 1
+                state.party_score_votes[Party.republication] += 1
+                state.last_winning_party = 0
             elif total_scores[1] > total_scores[0]:
                 state.party_score_votes[1] += 1
+                state.last_winning_party = 1
             
             # Always tally total sway for a state
             state.party_score_sway[0] += \
@@ -89,7 +93,7 @@ class Vote(ndb.Model):
     """Models an individual Vote - always associated with user"""
     question = ndb.KeyProperty(kind=Question)
     replyid = ndb.StringProperty(indexed=False)
-    state = ndb.StringProperty(indexed=False)
+    state_abbreviation = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
     sway_points = ndb.IntegerProperty(indexed=False)
     winning_vote = ndb.BooleanProperty(indexed=False)
