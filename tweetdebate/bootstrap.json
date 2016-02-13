@@ -1,24 +1,280 @@
 {
     "questions": [
         {
-           "-------": "----------------REPUBLICAN QUOTES-----------------------",
             "image": null,
-            "question_text": "\"A complete shutdown of Muslims entering the United States\" yes no why?",
-            "party": 0
+            "question_text": "\"To be COF it requires understanding economy, and technology which is also a weapon used against us.\" Do you agree? #yes #no #cyberwars",
+            "party": 0,
+            "comment": "Carly Fiorina - 08/06/2015"
         },
         {
             "image": null,
-            "question_text": "\"Free Fajitas for all\" - Do you agree with Hillary? yes no why?",
-            "party": 1,
-            "question_text": "\"A complete shutdown of #Muslims entering the United States\" #yes #no why?",
+            "question_text": "\"Americans are tired of Washington corporate interest and Democrats who are interested in politics and power\" #yes or #no #birdcorps",
             "party": 0,
-            "comment": "Origin of the quote"
+            "comment": "Rick Santorum - 08/06/2015"
         },
         {
             "image": null,
-            "question_text": "republican quote",
+            "question_text": "\"Its a bad deal with Iran - we're not staying with Israel. I think the people are looking for real Leadership.\" right? #yes #no #birddeal",
             "party": 0,
-            "comment": "Origin of the quote"
+            "comment": "Bobby Jindal - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"A choice between a weak economy and a strong environment is a false one. An energy independent america would be my goal.\" #yes #no #realGW",
+            "party": 0,
+            "comment": "Lindsey Graham - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"Because of the Obama/Clinton policies, the United States is moving further into a decline.\" We need to solve it. #yes #no #Obanton",
+            "party": 0,
+            "comment": "Jim Gilmore - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"How can we beat an enemy if our CIC can't say that islam has a problem and that is radical islam.\" Right? #yes #no #heNeedsToSayIt",
+            "party": 0,
+            "comment": "Bobby Jindal - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"Sometimes you win a war by killing murderous evil terrorists.\" #yes #no #SendInTheEagles",
+            "party": 0,
+            "comment": "Bobby Jindal - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"If you don't understand that we need more ground forces in Iraq, then you're not ready to be commander in chief.\" #yes #no #MoreEagles",
+            "party": 0,
+            "comment": "Lindsey Graham - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"If we don't stop them over there, then they're coming over here.\" #yes #no #VulturesAreIncoming",
+            "party": 0,
+            "comment": "Lindsey Graham - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"A simple strategy against ISIL - Whatever it takes, as long as it takes, to defeat them.\" #yes #no #PigeonPoopThem",
+            "party": 0,
+            "comment": "Lindsey Graham - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"I would not place one american life at risk, but to destroy ISIS, it is absolutely necessary.\" #yes #no #LeavingTheNest",
+            "party": 0,
+            "comment": "George Pataki - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "\"We need to tear down cyber walls, not on a mass basis but on a targeted basis.\" Shouldn't we? #yes #no #NoPrivacyForCrows",
+            "party": 0,
+            "comment": "Carly Fiorina - 08/06/2015"
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
+        },
+        {
+            "image": null,
+            "question_text": "",
+            "party": 0,
+            "comment": ""
         },
         {
             "-------": "----------------DEMOCRAT QUOTES------------------------",
