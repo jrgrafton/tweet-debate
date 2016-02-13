@@ -23,6 +23,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/speech_bubbles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portraits.css') }}">
     <style type="text/css">
 
       /* Needed for the nav-bar. */
@@ -94,33 +95,6 @@
         position: absolute;
       }
 
-      .candidate-portrait {
-        position: relative;;
-      }
-
-      .candidate-portrait-image {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 90px;
-        height: 110px;
-        clip-path:         ellipse(45px 55px at center);
-        -webkit-clip-path: ellipse(45px 55px at center);
-        -moz-clip-path:    ellipse(45px 55px at center);
-      }
-
-      .candidate-portrait-border {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        width: 102px;
-        height: 122px;
-        border: 6px solid red;
-        border-radius:         102px / 122px;
-        -webkit-border-radius: 102px / 122px;
-        -moz-border-radius:    102px / 122px;
-      }
-
     </style>
 
     <nav role="navigation" class="navbar-fixed-top">
@@ -161,10 +135,11 @@
 
 
 
-    <div class="candidate-portrait">
-      <div class="candidate-portrait-border"></div>
-      <img class="candidate-portrait-image" src="{{ url_for('static', filename='images/bushtit.png') }}" alt="A candidate">
-
+    <div class="quote">
+      <div class="candidate-portrait">
+        <div class="candidate-portrait-border candidate-portrait-border-red"></div>
+        <img class="candidate-portrait-image" src="{{ url_for('static', filename='images/bushtit.png') }}" alt="A candidate">
+      </div>
     </div>
 
 
@@ -185,20 +160,20 @@
         <!-- Main content. -->
         <div class="col-md-9">
           <!-- Top speech bubble for md and lg. -->
-          <div class="visible-md-block visible-lg-block">
+          <!-- div class="visible-md-block visible-lg-block">
             <div class="bubble bubble-right speech-buuble-text-main">
               The threat to our liberty from Wasington has never been greater.
             </div>
-          </div>
+          </div-->
 
           <!-- Avatar and speech bubble for sm and xs. -->
-          <div class="visible-sm-block visible-xs-block">
+          <!-- div class="visible-sm-block visible-xs-block">
             <div class="bubble bubble-bottom-center speech-buuble-text-main">
               The threat to our liberty from Wasington has never been greater.
             </div>
             <img class="candidate-avatar-sm img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" style="" alt="A candidate">
             </img>
-          </div>
+          </div -->
 
           <div id="map_container" class="container" style="display: block">
             <div id="map"></div>

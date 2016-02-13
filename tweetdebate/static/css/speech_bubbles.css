@@ -1,93 +1,93 @@
 .bubble{
-    background-color: #F2F2F2;
-    border-radius: 5px;
-    box-shadow: 0 0 6px #B2B2B2;
-    display: inline-block;
-    padding: 10px 18px;
-    position: relative;
-    vertical-align: top;
+  background-color: #F2F2F2;
+  border-radius: 5px;
+  box-shadow: 0 0 6px #B2B2B2;
+  display: inline-block;
+  padding: 10px 18px;
+  position: relative;
+  vertical-align: top;
 }
 
 .bubble::before {
-    background-color: #F2F2F2;
-    content: "\00a0";
-    display: block;
-    height: 16px;
-    position: absolute;
-    transform:             rotate(29deg) skew(-35deg);
-        -moz-transform:    rotate(29deg) skew(-35deg);
-        -ms-transform:     rotate(29deg) skew(-35deg);
-        -o-transform:      rotate(29deg) skew(-35deg);
-        -webkit-transform: rotate(29deg) skew(-35deg);
-    width:  20px;
+  background-color: #F2F2F2;
+  content: "\00a0";
+  display: block;
+  height: 16px;
+  position: absolute;
+  transform:             rotate(29deg) skew(-35deg);
+    -moz-transform:    rotate(29deg) skew(-35deg);
+    -ms-transform:     rotate(29deg) skew(-35deg);
+    -o-transform:      rotate(29deg) skew(-35deg);
+    -webkit-transform: rotate(29deg) skew(-35deg);
+  width:  20px;
 }
 
 .bubble-left {
-    float: left;
-    margin: 5px 45px 5px 20px;
+  float: left;
+  margin: 5px 45px 5px 20px;
 }
 
 .bubble-left::before {
-    box-shadow: -2px 2px 2px 0 rgba(178, 178, 178, .4);
-    left: -9px;
-    top: 11px;
+  box-shadow: -2px 2px 2px 0 rgba(178, 178, 178, .4);
+  left: -9px;
+  top: 11px;
 }
 
 .bubble-right {
-    float: right;
-    margin: 5px 20px 5px 45px;
+  float: right;
+  margin: 5px 20px 5px 45px;
 }
 
 .bubble-right::before {
-    box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
-    right: -9px;
-    top: 11px;
+  box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
+  right: -9px;
+  top: 11px;
 }
 
 .bubble-bottom-left {
-    float: right;
-    margin: 5px 20px 5px 45px;
+  float: right;
+  margin: 5px 20px 5px 45px;
 }
 
 .bubble-bottom-left::before {
-    box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
-    transform:             rotate(119deg) skew(-25deg);
-        -moz-transform:    rotate(119deg) skew(-25deg);
-        -ms-transform:     rotate(119deg) skew(-25deg);
-        -o-transform:      rotate(119deg) skew(-25deg);
-        -webkit-transform: rotate(119deg) skew(-25deg);
-    left: 15px;
-    bottom: -7px;
+  box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
+  transform:             rotate(119deg) skew(-25deg);
+    -moz-transform:    rotate(119deg) skew(-25deg);
+    -ms-transform:     rotate(119deg) skew(-25deg);
+    -o-transform:      rotate(119deg) skew(-25deg);
+    -webkit-transform: rotate(119deg) skew(-25deg);
+  left: 15px;
+  bottom: -7px;
 }
 
 .bubble-bottom-right {
-    float: right;
-    margin: 5px 20px 5px 45px;
+  float: right;
+  margin: 5px 20px 5px 45px;
 }
 
 .bubble-bottom-right::before {
-    box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
-    transform:             rotate(119deg) skew(-45deg);
-        -moz-transform:    rotate(119deg) skew(-45deg);
-        -ms-transform:     rotate(119deg) skew(-45deg);
-        -o-transform:      rotate(119deg) skew(-45deg);
-        -webkit-transform: rotate(119deg) skew(-45deg);
-    right: 15px;
-    bottom: -7px;
+  box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
+  transform:             rotate(119deg) skew(-45deg);
+    -moz-transform:    rotate(119deg) skew(-45deg);
+    -ms-transform:     rotate(119deg) skew(-45deg);
+    -o-transform:      rotate(119deg) skew(-45deg);
+    -webkit-transform: rotate(119deg) skew(-45deg);
+  right: 15px;
+  bottom: -7px;
 }
 
 .bubble-bottom-center {
-    float: right;
-    margin: 5px 20px 5px 45px;
+  float: right;
+  margin: 5px 20px 5px 45px;
 }
 
 .bubble-bottom-center::before {
-    box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
-    transform:             rotate(119deg) skew(-35deg);
-        -moz-transform:    rotate(119deg) skew(-35deg);
-        -ms-transform:     rotate(119deg) skew(-35deg);
-        -o-transform:      rotate(119deg) skew(-35deg);
-        -webkit-transform: rotate(119deg) skew(-35deg);
-    right: 50%;
-    bottom: -7px;
+  box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
+  transform:             rotate(119deg) skew(-35deg);
+    -moz-transform:    rotate(119deg) skew(-35deg);
+    -ms-transform:     rotate(119deg) skew(-35deg);
+    -o-transform:      rotate(119deg) skew(-35deg);
+    -webkit-transform: rotate(119deg) skew(-35deg);
+  right: 50%;
+  bottom: -7px;
 }

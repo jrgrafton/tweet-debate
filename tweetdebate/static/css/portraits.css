@@ -1,0 +1,34 @@
+.candidate-portrait {
+  position: relative;;
+}
+
+.candidate-portrait-image {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 90px;
+  height: 110px;
+  clip-path:           ellipse(45px 55px at center);
+    -webkit-clip-path: ellipse(45px 55px at center);
+    -moz-clip-path:    ellipse(45px 55px at center);
+}
+
+.candidate-portrait-border {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 102px;
+  height: 122px;
+  border: 6px solid;
+  border-radius:           102px / 122px;
+    -webkit-border-radius: 102px / 122px;
+    -moz-border-radius:    102px / 122px;
+}
+
+.candidate-portrait-border-red {
+  border-color: #BF0A30;
+}
+
+.candidate-portrait-border-blue {
+  border-color: #002868;
+}
