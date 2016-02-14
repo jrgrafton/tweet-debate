@@ -3,7 +3,7 @@ import logging
 from enum import Enum
 from google.appengine.ext import ndb
 
-# Integer representations for parties
+# @TODO: reference ENUM values rather than integers
 class Party(Enum):
     republication = 0
     democrat = 1
@@ -13,9 +13,11 @@ class State(ndb.Model):
     state_abbreviation = ndb.StringProperty()
     party_score_votes = ndb.IntegerProperty(indexed=False, repeated=True)
     party_score_sway = ndb.IntegerProperty(indexed=False, repeated=True)
+    last_winning_party = ndb.IntegerProperty(indexed=False, default=None)
 
     @classmethod
     def get_state_by_abbreviation(cls, state_abbreviation):
+        state_abbreviation = state_abbreviation.upper()
         return cls.query(cls.state_abbreviation == state_abbreviation).get()
 
     @classmethod
@@ -33,16 +35,30 @@ class State(ndb.Model):
     # Updates state scores based on result of a question
     @classmethod
     def update_state_scores(cls, question_state_scores):
+        # Loops over each state that was voted for in this question
         for question_state_score in question_state_scores:
             state = cls.query(cls.state_abbreviation == \
                     question_state_score.state_abbreviation).get()
-            if question_state_score.party_score_votes[0] > \
-                    question_state_score.party_score_votes[1]:
-                state.party_score_votes[0]+=1
-            elif question_state_score.party_score_votes[1] > \
-                    question_state_score.party_score_votes[0]:
-                state.party_score_votes[1]+=1
+            total_scores = []
+            total_scores.append(question_state_score.party_score_votes[0] + \
+                              question_state_score.party_score_sway[0])
+            total_scores.append(question_state_score.party_score_votes[1] + \
+                              question_state_score.party_score_sway[1])
+
             # Ties get no points
+            if total_scores[0] > total_scores[1]:
+                state.party_score_votes[Party.republication] += 1
+                state.last_winning_party = 0
+            elif total_scores[1] > total_scores[0]:
+                state.party_score_votes[1] += 1
+                state.last_winning_party = 1
+            
+            # Always tally total sway for a state
+            state.party_score_sway[0] += \
+                question_state_score.party_score_sway[0]
+            state.party_score_sway[1] += \
+                question_state_score.party_score_sway[1]
+
             state.put()
 
 class Question(ndb.Model):
@@ -77,8 +93,10 @@ class Vote(ndb.Model):
     """Models an individual Vote - always associated with user"""
     question = ndb.KeyProperty(kind=Question)
     replyid = ndb.StringProperty(indexed=False)
-    state = ndb.StringProperty(indexed=False)
+    state_abbreviation = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
+    sway_points = ndb.IntegerProperty(indexed=False)
+    winning_vote = ndb.BooleanProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
 
     @classmethod
@@ -87,8 +105,8 @@ class Vote(ndb.Model):
 
 class User(ndb.Model):
     """Models an individual User"""
-    userid = ndb.StringProperty()
-    sway_points = ndb.IntegerProperty(indexed=False, default=50) # Default 50 swing points
+    userid = ndb.StringProperty() #@TODO: change this to screen_name
+    sway_points = ndb.IntegerProperty(indexed=False, default=50)
     votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
 
     @classmethod
@@ -104,9 +122,12 @@ class User(ndb.Model):
         if user is None:
             user = User(
                 userid = userid,
-                votes = [vote]
+                votes = [vote],
+                # Can use sway points upon creation
+                sway_points = (50 - vote.sway_points)
             )
             user.put()
         else:
             user.votes.append(vote)
+            user.sway_points -= vote.sway_points
             user.put()

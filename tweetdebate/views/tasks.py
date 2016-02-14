@@ -6,11 +6,18 @@ from flask import Blueprint
 from flask import request
 from tweetdebate.models import Question
 from tweetdebate.models import State
+from tweetdebate.models import User
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from tweetdebate.tasks.twitter_stream import TwitterStream
 from tweepy import TweepError
 
 mod = Blueprint('tasks', __name__)
+sway_points = {
+    "submit_answer" : 1,
+    "submit_winning_answer" : 1,
+    "streak_bonus" : 1,
+    "refund" : 0.25 # % of sway points refunded on correct vote 
+}
 
 @mod.route("/tasks/twitter_post_status")
 def twitter_post_status():
@@ -35,10 +42,15 @@ def twitter_post_status():
             except TweepError as e:
                 pass  #TODO: do something - message to monitoring?
 
+        # Update overall state scores if this isn't the first question
         if current_question is not None:
+            State.update_state_scores(current_question.state_scores)
+
+            users = User.get_all()
+            for user in users:
+                __attribute_sway_points_for_user(current_question, user)
             current_question.end_time = datetime.datetime.now()
             current_question.put()
-            State.update_state_scores(current_question.state_scores)
         
         next_question.start_time = datetime.datetime.now()
         next_question.put()
@@ -57,20 +69,29 @@ def __is_time_for_new_question(question_cadence_minutes):
             datetime.timedelta(minutes=question_cadence_minutes)
         return datetime.datetime.now() > next_question_start_time
 
-@mod.route("/tasks/twitter_stream")
-def twitter_stream():
-    """ Activate Twitter Stream Daemon
-    """
-    # Start or stop stream?
-    action = request.args.get('action', "start")
 
-    pid_file = os.path.dirname(os.path.realpath(__file__)) + \
-            "/../../daemon-twitterstream.pid"
-    twitter_stream = TwitterStream(TwitterStreamListener())
+# attribute sway points at start of new question
+def __attribute_sway_points_for_user(current_question, user):
+    # At least one vote on current question
+    if len(user.votes) > 0 \
+            and user.votes[-1].question.id() == current_question.key.id():
+        user.sway_points += sway_points["submit_answer"]
+        
+        # Voted for winning party
+        state = State.get_state_by_abbreviation(\
+                    user.votes[-1].state_abbreviation)
 
-    if action == "start":
-        twitter_stream.start()
-        return 'Started Twitter Stream', 200
-    else:
-        twitter_stream.stop()
-        return 'Stopped Twitter Stream', 200
+        if user.votes[-1].party == state.last_winning_party:
+            user.votes[-1].winning_vote = True
+            user.sway_points += sway_points["submit_winning_answer"]
+             # Voted for winning party twice in a row
+            if len(user.votes) == 2 and user.votes[-2].winning_vote == True:
+                user.sway_points += sway_points["streak_bonus"]
+            # Return used sway points
+            user.sway_points += int(user.votes[-1].sway_points * \
+                                    sway_points["refund"])
+        else:
+            user.votes[-1].winning_vote = False
+
+        # Update user in database
+        user.put()
