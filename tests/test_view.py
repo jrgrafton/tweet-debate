@@ -17,7 +17,8 @@ from tweetdebate.models import User
 from tweetdebate.models import Vote
 from tweetdebate.views import backend
 from tweetdebate.views import tasks
-from tweetdebate.views.tasks import sway_points
+from tweetdebate.views.tasks import sway_points as sway_points_tasks
+from tweetdebate.views.backend import sway_points as sway_points_backend
 from tweetdebate.views.backend import TwitterStreamListener
 from tweetdebate.tasks.twitter_api import TwitterAPI
 from test_base import TestBase
@@ -74,8 +75,6 @@ class TestView(TestBase):
 
     # Also covers parse_data
     def test_view_tasks_twitter_stream_listener_on_data(self):
-        return
-
         load_fixture('tests/states.json', kind={'State': State})
         load_fixture('tests/questions_no_votes.json', 
                         kind={'Question': Question,'State': State})
@@ -83,44 +82,40 @@ class TestView(TestBase):
         twitter_stream = open(os.path.join(os.path.dirname(__file__),
                                           'twitter_stream.json'))
         twitter_stream = json.load(twitter_stream)
-
         twitter_stream_listener = TwitterStreamListener()
-        twitter_stream_listener.on_data(twitter_stream["twitter_reply_old"])
+
+        twitter_stream_listener.on_data(
+            json.dumps(twitter_stream["twitter_reply_old"]))
         users = User.get_all()
         assert len(users) == 0
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_reply_old"])
+            json.dumps(twitter_stream["twitter_reply_old"]))
         users = User.get_all()
         assert len(users) == 0
         
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_reply_current_invalid"])
+            json.dumps(twitter_stream["twitter_reply_current_invalid"]))
         users = User.get_all()
         assert len(users) == 0
         
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_post"])
+            json.dumps(twitter_stream["twitter_post"]))
         users = User.get_all()
         assert len(users) == 0
         
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_mention"])
+            json.dumps(twitter_stream["twitter_mention"]))
         users = User.get_all()
         assert len(users) == 0
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_retweet"])
+            json.dumps(twitter_stream["twitter_favourite"]))
         users = User.get_all()
         assert len(users) == 0
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_favourite"])
-        users = User.get_all()
-        assert len(users) == 0
-
-        twitter_stream_listener.on_data(
-            twitter_stream["twitter_favourite_reply"])
+            json.dumps(twitter_stream["twitter_favourite_reply"]))
         users = User.get_all()
         assert len(users) == 0
 
@@ -128,7 +123,7 @@ class TestView(TestBase):
         assert len(current_question.state_scores) == 0
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_reply_current_valid_user1"])
+            json.dumps(twitter_stream["twitter_reply_current_valid_user1"]))
         users = User.get_all()
         assert len(users) == 1
         current_question = Question.get_current_question()
@@ -137,15 +132,16 @@ class TestView(TestBase):
         assert current_question.state_scores[0].party_score_votes[0] == 0
         assert current_question.state_scores[0].party_score_votes[1] == 1
         assert current_question.state_scores[0].party_score_sway[0] == 0
-        assert current_question.state_scores[0].party_score_sway[0] == 50
+        assert current_question.state_scores[0].party_score_sway[1] == \
+            User.get_starting_sway_points()
         assert users[0].sway_points == 0
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_reply_current_valid_user1"])
+            json.dumps(twitter_stream["twitter_reply_current_valid_user1"]))
         users = User.get_all()
         assert len(users) == 1
         assert len(users[0].votes) == 1
-        assert users[0].sway_points == 50
+        assert users[0].sway_points == 0
 
         current_question = Question.get_current_question()
         assert len(current_question.state_scores) == 1
@@ -153,11 +149,12 @@ class TestView(TestBase):
         assert current_question.state_scores[0].party_score_votes[0] == 0
         assert current_question.state_scores[0].party_score_votes[1] == 1
         assert current_question.state_scores[0].party_score_sway[0] == 0
-        assert current_question.state_scores[0].party_score_sway[0] == 50
+        assert current_question.state_scores[0].party_score_sway[1] == \
+            User.get_starting_sway_points()
         assert users[0].sway_points == 0
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_reply_current_valid_user2"])
+            json.dumps(twitter_stream["twitter_reply_current_valid_user2"]))
         users = User.get_all()
         assert len(users) == 2
         current_question = Question.get_current_question()
@@ -165,14 +162,77 @@ class TestView(TestBase):
         assert current_question.state_scores[1].state_abbreviation == "WA"
         assert current_question.state_scores[1].party_score_votes[0] == 1
         assert current_question.state_scores[1].party_score_votes[1] == 0
-        assert current_question.state_scores[1].party_score_votes[0] == 20
-        assert current_question.state_scores[1].party_score_votes[1] == 0
-        assert users[1].sway_points == 30
+        assert current_question.state_scores[1].party_score_sway[0] == 20
+        assert current_question.state_scores[1].party_score_sway[1] == 0
+        assert users[1].sway_points == User.get_starting_sway_points() - 20
 
         twitter_stream_listener.on_data(
-            twitter_stream["twitter_reply_current_valid_user2"])
+            json.dumps(twitter_stream["twitter_reply_current_valid_user2"]))
         users = User.get_all()
         assert len(users) == 2
+        assert current_question.state_scores[1].state_abbreviation == "WA"
+        assert current_question.state_scores[1].party_score_votes[0] == 1
+        assert current_question.state_scores[1].party_score_votes[1] == 0
+        assert current_question.state_scores[1].party_score_sway[0] == 20
+        assert current_question.state_scores[1].party_score_sway[1] == 0
+        assert users[1].sway_points == User.get_starting_sway_points() - 20
+
+        twitter_stream_listener.on_data(
+            json.dumps(twitter_stream["twitter_retweet"]))
+        users = User.get_all()
+        assert len(users) == 3
+        assert users[2].sway_points == User.get_starting_sway_points() + \
+                                       sway_points_backend["rewteet_poll"]
+
+    def test_view_tasks_twitter_stream_listener_process_retweet_from_screename(self):
+        load_fixture('tests/states.json', kind={'State': State})
+        load_fixture('tests/questions.json', 
+                        kind={'Question': Question,'State': State})
+        twitter_stream_listener = TwitterStreamListener()
+        current_question = Question.get_current_question()
+        
+        # Invalid retweet id
+        twitter_stream_listener.process_retweet_from_screename(current_question,
+                                                               -1,
+                                                               "jrgrafton")
+        users = User.get_all()
+        assert len(users) == 0
+
+        # Valid retweet id - new user
+        twitter_stream_listener.\
+            process_retweet_from_screename(current_question,
+                                           current_question.twitterid,
+                                           "jrgrafton")
+        users = User.get_all()
+        assert len(users) == 1
+        assert users[0].sway_points == User.get_starting_sway_points() + \
+                                       sway_points_backend["rewteet_poll"]
+
+        # Ensure no extra sway given for retweet
+        twitter_stream_listener.\
+            process_retweet_from_screename(current_question,
+                                           current_question.twitterid,
+                                           "jrgrafton")
+        users = User.get_all()
+        assert len(users) == 1
+        assert users[0].sway_points == User.get_starting_sway_points() + \
+                                       sway_points_backend["rewteet_poll"]
+
+        # Test existing user reweet
+        user = User(
+            userid = "jrgrafton2",
+            sway_points = 30
+        )
+        user.put()
+
+        # Valid retweet id - new user
+        twitter_stream_listener.\
+            process_retweet_from_screename(current_question,
+                                           current_question.twitterid,
+                                           "jrgrafton2")
+        users = User.get_all()
+        assert len(users) == 2
+        assert users[1].sway_points == 30 + sway_points_backend["rewteet_poll"]
 
     def test_view_tasks_twitter_stream_listener_add_vote_for_screenname(self):
         load_fixture('tests/states.json', kind={'State': State})
@@ -571,7 +631,7 @@ class TestView(TestBase):
             ["__attribute_sway_points_for_user"](current_question, user)
 
         assert user.sway_points == original_sway_points + \
-                                   sway_points["submit_answer"]
+                                   sway_points_tasks["submit_answer"]
 
         # Vote - winning (party 1 has most votes for this question and state)
         original_sway_points = user.sway_points
@@ -579,10 +639,10 @@ class TestView(TestBase):
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
         assert user.sway_points == original_sway_points + \
-                                  sway_points["submit_answer"] + \
-                                  sway_points["submit_winning_answer"] + \
+                                  sway_points_tasks["submit_answer"] + \
+                                  sway_points_tasks["submit_winning_answer"] + \
                                   int(vote_current.sway_points * \
-                                      sway_points["refund"])
+                                      sway_points_tasks["refund"])
 
         # Vote - winning + streak
         original_sway_points = user.sway_points
@@ -590,11 +650,11 @@ class TestView(TestBase):
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
         assert user.sway_points == original_sway_points + \
-                                  sway_points["submit_answer"] + \
-                                  sway_points["submit_winning_answer"] + \
-                                  sway_points["streak_bonus"] + \
+                                  sway_points_tasks["submit_answer"] + \
+                                  sway_points_tasks["submit_winning_answer"] + \
+                                  sway_points_tasks["streak_bonus"] + \
                                   int(vote_current.sway_points * \
-                                      sway_points["refund"])
+                                      sway_points_tasks["refund"])
 
     def test_404(self):
         result = self.app.get('/missing')

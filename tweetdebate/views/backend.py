@@ -65,16 +65,18 @@ class TwitterStreamListener(StreamListener):
     def parse_data(self, data):
         # Process replies
         logging.info("parse_data: %s" % str(data))
+        current_question = Question.get_current_question()
 
         # Retweeted poll
-        """if "quoted_tweet" in data:
-            target_id = str(data["target_object"]["id"])
+        if "event" in data and data["event"] == "quoted_tweet":
+            target_id = str(data["target_object"]["quoted_status_id"])
             screen_name = data["source"]["screen_name"]
-            self.process_retweet_from_screename(target_id, screen_name)"""
+            self.process_retweet_from_screename(current_question,
+                                                target_id,
+                                                screen_name)
 
         # Replied to status
         if "in_reply_to_status_id" in data:
-            current_question = Question.get_current_question()
             reply_status_id = str(data["in_reply_to_status_id"])
             
             # Only acknowledge replies to current question
@@ -91,6 +93,8 @@ class TwitterStreamListener(StreamListener):
                 if user != None:
                     if user.sway_points < sway_points:
                         sway_points = user.sway_points
+                elif sway_points > User.get_starting_sway_points():
+                    sway_points = User.get_starting_sway_points()
 
                 # Only add vote for question if user vote was valid
                 if self.add_vote_for_screenname(current_question, 
@@ -106,14 +110,23 @@ class TwitterStreamListener(StreamListener):
                                                state_abbreviation,
                                                current_question)
     
-    def process_retweet_from_screename(self, target_id, screen_name):
-        user = User.query_by_userid(screen_name).get()
-        # Add user if they don't exist
-        if user == None:
-            user = User(userid = screen_name)
-            user.put()
-        
-        user.sway_points += sway_points["rewteet_poll"]
+    def process_retweet_from_screename(self,
+                                       current_question,
+                                       target_id,
+                                       screen_name):
+        # Has to retweet active poll
+        if current_question.twitterid == target_id:
+            user = User.query_by_userid(screen_name).get()
+            # Add user if they don't exist
+            if user == None:
+                user = User(userid = screen_name)
+                user.put()
+
+            # Users can cheat by deleting and retweeting
+            if user.last_retweet_id != current_question.twitterid:
+                # Attribute sway points
+                user.last_retweet_id = str(current_question.twitterid)
+                user.sway_points += sway_points["rewteet_poll"]
 
     def add_vote_for_screenname(self,
                                 question,

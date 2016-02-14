@@ -36,7 +36,8 @@ class TestModel(TestBase):
         # Ensure user was created
         user_entity = User.query_by_userid("jrgrafton_test").fetch()
         assert len(user_entity) == 1
-        assert user_entity[0].sway_points == 10
+        assert user_entity[0].sway_points == User.get_starting_sway_points() - \
+                                             40
         assert user_entity[0].userid == "jrgrafton_test"
         assert user_entity[0].votes[0].question == current_question_entity.key
         assert user_entity[0].votes[0].replyid == "692368266292023296"
@@ -57,8 +58,8 @@ class TestModel(TestBase):
         user_entity = User.query_by_userid("jrgrafton_test").fetch()
         assert len(user_entity) == 1
         assert len(user_entity[0].votes) == 2
-        assert user_entity[0].sway_points == 0
-
+        assert user_entity[0].sway_points == User.get_starting_sway_points() - \
+                                             (40 + 10)
         # Verify integrity of new vote
         assert user_entity[0].votes[1].question == next_question_entity.key
         assert user_entity[0].votes[1].replyid == "692368266292023297"

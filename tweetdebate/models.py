@@ -108,6 +108,11 @@ class User(ndb.Model):
     userid = ndb.StringProperty() #@TODO: change this to screen_name
     sway_points = ndb.IntegerProperty(indexed=False, default=50)
     votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
+    last_retweet_id = ndb.StringProperty(indexed=False, default=None)
+
+    @classmethod
+    def get_starting_sway_points(cls):
+        return 50
 
     @classmethod
     def get_all(cls):
@@ -124,7 +129,8 @@ class User(ndb.Model):
                 userid = userid,
                 votes = [vote],
                 # Can use sway points upon creation
-                sway_points = (50 - vote.sway_points)
+                sway_points = (User.get_starting_sway_points() - \
+                               vote.sway_points)
             )
             user.put()
         else:
