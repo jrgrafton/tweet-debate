@@ -30,20 +30,19 @@
       body.navbar-height{
         padding-top: 200px;
       }
-
       .main-logo {
         width: 100pt;
         height: 35pt;
       }
-      .usa-map {
-        width: 65%;
-        margin: 0 auto;
+      .usa-map-mobile {
+        width: 90%;
+        margin: auto;
+        padding: 60px;
       }
-      .quote {
-        width: 80%;
-        margin: 0 auto;
-        margin-right: 5pt;
-        margin-bottom: 25pt;
+      .usa-map-desktop {
+        width: 75%;
+        margin: auto;
+        padding: 60px;
       }
       .candidate-avatar {
         width: 60%;
@@ -62,31 +61,21 @@
         font-family: 'Indie Flower', cursive;
         font-size: 20pt;
       }
-
       .top-bar {
         margin-top: 50px;
         height: 50px;
         background-color: #002868;
       }
-
       .top-bar-text {
         color: white;
         font-family: 'Comfortaa', cursive;
       }
-
-      .center-block {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
       .navbar-brand-centered{
         margin-left: auto;
         margin-right: auto;
         margin-top: -70px;
         height: 200px;
       }
-
       .navbar-brand-centered {
         background: url("{{ url_for('static', filename='images/logo.png') }}") center / contain no-repeat;
         width: 300px;
@@ -108,15 +97,14 @@
             </ul>
 
             <ul class="nav">
-              <a href="#" class="navbar-brand navbar-brand-centered">
-              </a>
+              <a href="#" class="navbar-brand navbar-brand-centered"></a>
             </ul>
 
             <!-- Collection of nav links and other content for toggling -->
             <div id="navbarCollapse" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active clickable"><a href="#"><strong class="top-bar-text">Home</strong></a></li>
-                    <li class="clickable"><a href="#"><strong class="top-bar-text">How to play</strong></a></li>
+                    <!-- li class="active clickable"><a href="#"><strong class="top-bar-text">Home</strong></a></li>
+                    <li class="clickable"><a href="#"><strong class="top-bar-text">How to play</strong></a></li -->
                     <li class="clickable"><a href="#"><strong class="top-bar-text">About</strong></a></li>
                 </ul>
             </div>
@@ -132,57 +120,30 @@
     </nav>
   </head>
   <body class="navbar-height">
-
-
-
-    <div class="quote">
-      <div class="candidate-portrait">
-        <div class="candidate-portrait-border candidate-portrait-border-red"></div>
-        <img class="candidate-portrait-image" src="{{ url_for('static', filename='images/bushtit.png') }}" alt="A candidate">
-      </div>
-    </div>
-
-
-
-
-    <!-- Main dynamic grid, 12 columns. -->
-
-
-
     <div class="container">
 
-    <!-- Right bar, hidden on xs and sm. -->
-    <div class="col-md-3 hidden-sm hidden-xs">
-    </div>
-
-
-      <div class="row">
-        <!-- Main content. -->
-        <div class="col-md-9">
-          <!-- Top speech bubble for md and lg. -->
-          <!-- div class="visible-md-block visible-lg-block">
-            <div class="bubble bubble-right speech-buuble-text-main">
-              The threat to our liberty from Wasington has never been greater.
-            </div>
-          </div-->
-
-          <!-- Avatar and speech bubble for sm and xs. -->
-          <!-- div class="visible-sm-block visible-xs-block">
-            <div class="bubble bubble-bottom-center speech-buuble-text-main">
-              The threat to our liberty from Wasington has never been greater.
-            </div>
-            <img class="candidate-avatar-sm img-responsive" src="{{ url_for('static', filename='images/mock_candidate.png') }}" style="" alt="A candidate">
-            </img>
-          </div -->
-
-          <div id="map_container" class="container" style="display: block">
-            <div id="map"></div>
-          </div>
-
-          <div>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.Quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus. Tibulum consectetur scelerisque lacus, ac fermentum lorem convallis sed.</p>
+      <div class="candidate-quote">
+        <div class="candidate-portrait">
+          <div class="candidate-portrait-border candidate-portrait-border-red"></div>
+          <img class="candidate-portrait-image" src="{{ url_for('static', filename='images/bushtit.png') }}" alt="A candidate">
+        </div>
+        <div class="candidate-quote-text-container">
+          <div class="bubble bubble-left speech-buuble-text-main">
+            The threat to our liberty from Washington has never been greater.
           </div>
         </div>
+      </div>
+
+      <div id="map_container" class="container">
+        <div id="map"></div>
+      </div>
+
+      <div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.Quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus. Tibulum consectetur scelerisque lacus, ac fermentum lorem convallis sed.</p>
+      </div>
+
+      <div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.Quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus. Tibulum consectetur scelerisque lacus, ac fermentum lorem convallis sed.</p>
       </div>
     </div>
 

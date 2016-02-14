@@ -1,5 +1,13 @@
+
+.candidate-quote {
+  display: block;
+  position: relative;
+  height: 200px;
+  margin: 20px;
+}
+
 .candidate-portrait {
-  position: relative;;
+  position: absolute;
 }
 
 .candidate-portrait-image {
@@ -31,4 +39,10 @@
 
 .candidate-portrait-border-blue {
   border-color: #002868;
+}
+
+.candidate-quote-text-container {
+  position: absolute;
+  left: 80px;
+  top: 40px;
 }
