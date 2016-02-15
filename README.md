@@ -17,7 +17,7 @@ See the README file for directions. You'll need python 2.7 and [pip 1.4 or later
    Note: App Engine can only import libraries from inside your project directory.
 
    ```
-   cd appengine-python-flask-skeleton
+   cd <location-of-checkout>/tweet-debate
    pip install -r requirements.txt -t lib
    ```
 4. Enable Sockets and SSL

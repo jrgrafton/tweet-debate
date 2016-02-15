@@ -525,10 +525,10 @@ class TestView(TestBase):
 
         # Ensure user had sway points returned
         assert user.sway_points == original_sway_points + \
-                          sway_points["submit_answer"] + \
-                          sway_points["submit_winning_answer"] + \
+                          sway_points_tasks["submit_answer"] + \
+                          sway_points_tasks["submit_winning_answer"] + \
                           int(vote_current.sway_points * \
-                              sway_points["refund"])
+                              sway_points_tasks["refund"])
 
         # Ensure Twitter timeline has been updated
         twitter_status = twitter_api.get_last_tweet().text
