@@ -71,10 +71,13 @@ class TwitterStreamListener(StreamListener):
         if "event" in data and data["event"] == "quoted_tweet":
             target_id = str(data["target_object"]["quoted_status_id"])
             screen_name = data["source"]["screen_name"]
+            profile_image_url = data["source"] \
+                                    ["profile_image_url_https"] \
+                                    .replace("_normal", "_bigger")
             self.process_retweet_from_screename(current_question,
                                                 target_id,
-                                                screen_name)
-
+                                                screen_name,
+                                                profile_image_url)
         # Replied to status
         if "in_reply_to_status_id" in data:
             reply_status_id = str(data["in_reply_to_status_id"])
@@ -82,6 +85,10 @@ class TwitterStreamListener(StreamListener):
             # Only acknowledge replies to current question
             if reply_status_id == current_question.twitterid:
                 screen_name = data["user"]["screen_name"]
+                vote_text = data["text"]
+                profile_image_url = data["user"] \
+                                        ["profile_image_url_https"] \
+                                        .replace("_normal", "_bigger")
                 state_abbreviation = self.get_state_from_string(data["text"])
                 party = self.get_party_from_string_using_question(
                     data["text"], 
@@ -99,10 +106,12 @@ class TwitterStreamListener(StreamListener):
                 # Only add vote for question if user vote was valid
                 if self.add_vote_for_screenname(current_question, 
                                                 str(data["id"]),
+                                                vote_text,
                                                 state_abbreviation,
                                                 party,
                                                 sway_points,
-                                                screen_name):
+                                                screen_name,
+                                                profile_image_url):
                     
                     # Add vote for question if vote was valid
                     self.add_vote_for_question(party,
@@ -113,13 +122,17 @@ class TwitterStreamListener(StreamListener):
     def process_retweet_from_screename(self,
                                        current_question,
                                        target_id,
-                                       screen_name):
+                                       screen_name,
+                                       profile_image_url):
         # Has to retweet active poll
         if current_question.twitterid == target_id:
             user = User.query_by_userid(screen_name).get()
             # Add user if they don't exist
             if user == None:
-                user = User(userid = screen_name)
+                user = User(
+                    userid = screen_name,
+                    profile_image_url = profile_image_url
+                )
                 user.put()
 
             # Users can cheat by deleting and retweeting
@@ -130,11 +143,13 @@ class TwitterStreamListener(StreamListener):
 
     def add_vote_for_screenname(self,
                                 question,
+                                vote_text,
                                 replyid,
                                 state_abbreviation,
                                 party,
                                 sway_points,
-                                screen_name):
+                                screen_name,
+                                profile_image_url):
         # Require valid state and party to vote
         if state_abbreviation == None or party == None:
             return False
@@ -147,8 +162,10 @@ class TwitterStreamListener(StreamListener):
                 # Add vote for user
                 User.add_user_vote(user, 
                                    screen_name,
+                                   profile_image_url,
                                    Vote(
                                         question = question.key,
+                                        vote_text = vote_text,
                                         replyid = replyid,
                                         state_abbreviation = state_abbreviation,
                                         party = party,
@@ -174,15 +191,30 @@ class TwitterStreamListener(StreamListener):
                 return
 
         # State had no votes previously
-        states.append(State(
-            state_abbreviation = state_abbreviation,
-            party_score_votes = [0, 0],
-            party_score_sway = [0, 0] 
-        ))
+        states.append(
+            State(
+                state_abbreviation = state_abbreviation,
+                college_votes = self.get_college_votes_for_state_abbreviation( \
+                    state_abbreviation),
+                party_score_votes = [0, 0],
+                party_score_sway = [0, 0] 
+            )
+        )
 
         states[-1].party_score_votes[party] += 1
         states[-1].party_score_sway[party] += sway_points
         question.put()
+
+    def get_college_votes_for_state_abbreviation(self, state_abbreviation):
+        college_votes = {"AK":3,"AL":9,"AR":6,"AZ":11,"CA":55,"CO":9,"CT":7,
+                         "DC":3,"DE":3,"FL":29,"GA":16,"HI":4,"IA":6,"ID":4,
+                         "IL":20,"IN":11,"KS":6,"KY":8,"LA":8,"MA":11,"MD":10,
+                         "ME":4,"MI":16,"MN":10,"MO":10,"MS":6,"MT":3,"NC":15,
+                         "ND":3,"NE":5,"NH":4,"NJ":14,"NM":5,"NV":6,"NY":29,
+                         "OH":18,"OK":7,"OR":7,"PA":20,"RI":4,"SC":9,"SD":3,
+                         "TN":11,"TX":38,"UT":6,"VA":13,"VT":3,"WA":12,"WI":10,
+                         "WV":5,"WY":3}
+        return college_votes[state_abbreviation]
 
     def get_state_from_string(self, string):
         states = ["AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC",

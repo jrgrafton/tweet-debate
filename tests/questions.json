@@ -12,12 +12,14 @@
             {
                 "__kind__": "State",
                 "state_abbreviation" : "CA",
+                "college_votes" : 55,
                 "party_score_votes": [500, 10],
                 "party_score_sway": [5, 500]
             },
             {
                 "__kind__": "State",
                 "state_abbreviation" : "WA",
+                "college_votes" : 12,
                 "party_score_votes": [70, 140],
                 "party_score_sway": [50, 100]
             }
@@ -35,24 +37,28 @@
             {
                 "__kind__": "State",
                 "state_abbreviation" : "CA",
+                "college_votes" : 55,
                 "party_score_votes": [500, 10],
                 "party_score_sway": [5, 500]
             },
             {
                 "__kind__": "State",
                 "state_abbreviation" : "WA",
+                "college_votes" : 12,
                 "party_score_votes": [70, 140],
                 "party_score_sway": [50, 100]
             },
             {
                 "__kind__": "State",
                 "state_abbreviation" : "NY",
+                "college_votes" : 29,
                 "party_score_votes": [100, 100],
                 "party_score_sway": [0, 0]
             },
             {
                 "__kind__": "State",
                 "state_abbreviation" : "TX",
+                "college_votes" : 38,
                 "party_score_votes": [70, 80],
                 "party_score_sway": [80, 70]
             }

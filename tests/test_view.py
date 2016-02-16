@@ -57,7 +57,7 @@ class TestView(TestBase):
 
         # Post reply
         twitter_status_id = twitter_api.get_last_tweet().id
-        twitter_api.update_status("#yes for #WA", twitter_status_id)
+        twitter_api.update_status("#yes for #WA #sway10", twitter_status_id)
 
         # Wait for stream to be updated
         time.sleep(2)
@@ -66,12 +66,16 @@ class TestView(TestBase):
         ndb.get_context().clear_cache()
         users = User.get_all()
         assert len(users) == 1
+        users[0].sway_points = User.get_starting_sway_points() - 10
+        users[0].votes[0].vote_text == "#yes for #WA"
 
         current_question = Question.get_current_question()
         assert len(current_question.state_scores) == 1
         assert current_question.state_scores[0].state_abbreviation == "WA"
         assert current_question.state_scores[0].party_score_votes[0] == 1
         assert current_question.state_scores[0].party_score_votes[1] == 0
+        assert current_question.state_scores[0].party_score_sway[0] == 10
+        assert current_question.state_scores[0].party_score_sway[1] == 0
 
     # Also covers parse_data
     def test_view_tasks_twitter_stream_listener_on_data(self):
@@ -126,6 +130,7 @@ class TestView(TestBase):
             json.dumps(twitter_stream["twitter_reply_current_valid_user1"]))
         users = User.get_all()
         assert len(users) == 1
+        assert "https" in users[0].profile_image_url
         current_question = Question.get_current_question()
         assert len(current_question.state_scores) == 1
         assert current_question.state_scores[0].state_abbreviation == "CA"
@@ -157,6 +162,7 @@ class TestView(TestBase):
             json.dumps(twitter_stream["twitter_reply_current_valid_user2"]))
         users = User.get_all()
         assert len(users) == 2
+        assert "https" in users[1].profile_image_url
         current_question = Question.get_current_question()
         assert len(current_question.state_scores) == 2
         assert current_question.state_scores[1].state_abbreviation == "WA"
@@ -183,6 +189,7 @@ class TestView(TestBase):
         assert len(users) == 3
         assert users[2].sway_points == User.get_starting_sway_points() + \
                                        sway_points_backend["rewteet_poll"]
+        assert "https" in users[2].profile_image_url
 
     def test_view_tasks_twitter_stream_listener_process_retweet_from_screename(self):
         load_fixture('tests/states.json', kind={'State': State})
@@ -192,9 +199,14 @@ class TestView(TestBase):
         current_question = Question.get_current_question()
         
         # Invalid retweet id
-        twitter_stream_listener.process_retweet_from_screename(current_question,
-                                                               -1,
-                                                               "jrgrafton")
+        twitter_stream_listener.\
+            process_retweet_from_screename(current_question,
+                                            -1,
+                                           "jrgrafton",
+                                           "https://pbs.twimg.com// \
+                                            profile_images//440698495// \
+                                            9929_128442162134_504357134_ \
+                                            2556732_5649977_n_bigger.jpg")
         users = User.get_all()
         assert len(users) == 0
 
@@ -202,17 +214,26 @@ class TestView(TestBase):
         twitter_stream_listener.\
             process_retweet_from_screename(current_question,
                                            current_question.twitterid,
-                                           "jrgrafton")
+                                           "jrgrafton",
+                                           "https://pbs.twimg.com// \
+                                            profile_images//440698495// \
+                                            9929_128442162134_504357134_ \
+                                            2556732_5649977_n_bigger.jpg")
         users = User.get_all()
         assert len(users) == 1
         assert users[0].sway_points == User.get_starting_sway_points() + \
                                        sway_points_backend["rewteet_poll"]
+        assert "https" in users[0].profile_image_url
 
         # Ensure no extra sway given for retweet
         twitter_stream_listener.\
             process_retweet_from_screename(current_question,
                                            current_question.twitterid,
-                                           "jrgrafton")
+                                           "jrgrafton",
+                                           "https://pbs.twimg.com// \
+                                            profile_images//440698495// \
+                                            9929_128442162134_504357134_ \
+                                            2556732_5649977_n_bigger.jpg")
         users = User.get_all()
         assert len(users) == 1
         assert users[0].sway_points == User.get_starting_sway_points() + \
@@ -229,7 +250,11 @@ class TestView(TestBase):
         twitter_stream_listener.\
             process_retweet_from_screename(current_question,
                                            current_question.twitterid,
-                                           "jrgrafton2")
+                                           "jrgrafton2",
+                                           "https://pbs.twimg.com// \
+                                            profile_images//440698495// \
+                                            9929_128442162134_504357134_ \
+                                            2556732_5649977_n_bigger.jpg")
         users = User.get_all()
         assert len(users) == 2
         assert users[1].sway_points == 30 + sway_points_backend["rewteet_poll"]
@@ -242,36 +267,52 @@ class TestView(TestBase):
         current_question = Question.get_current_question()
         
         result = twitter_stream_listener.\
-                    add_vote_for_screenname(current_question,
-                                            "123",
-                                            None, # Invalid state
-                                            1,
-                                            0,
-                                            "jrgrafton")
+            add_vote_for_screenname(current_question,
+                                    "Vote text #yes",
+                                    "123",
+                                    None, # Invalid state
+                                    1,
+                                    0,
+                                    "jrgrafton",
+                                    "https://pbs.twimg.com// \
+                                    profile_images//440698495// \
+                                    9929_128442162134_504357134_ \
+                                    2556732_5649977_n_bigger.jpg")
         assert result == False
 
         result = twitter_stream_listener.\
             add_vote_for_screenname(current_question,
+                                    "Vote text #CA",
                                     "123",
                                     "CA",
                                     None, # Invalid party
                                     0,
-                                    "jrgrafton")
+                                    "jrgrafton",
+                                    "https://pbs.twimg.com// \
+                                    profile_images//440698495// \
+                                    9929_128442162134_504357134_ \
+                                    2556732_5649977_n_bigger.jpg")
         assert result == False
 
         # First valid user
         result = twitter_stream_listener.\
             add_vote_for_screenname(current_question,
+                                    "Vote text #CA #yes",
                                     "123",
                                     "CA",
                                     0,
                                     100,
-                                    "jrgrafton")
+                                    "jrgrafton",
+                                    "https://pbs.twimg.com// \
+                                    profile_images//440698495// \
+                                    9929_128442162134_504357134_ \
+                                    2556732_5649977_n_bigger.jpg")
         assert result == True
         user = User.query_by_userid("jrgrafton").get()
         assert user != None
         assert len(user.votes) == 1
         assert user.votes[0].question.get().key == current_question.key
+        assert user.votes[0].vote_text == "Vote text #CA #yes"
         assert user.votes[0].replyid == "123"
         assert user.votes[0].state_abbreviation == "CA"
         assert user.votes[0].party == 0
@@ -280,27 +321,38 @@ class TestView(TestBase):
         # Second vote for user on same question
         result = twitter_stream_listener.\
             add_vote_for_screenname(current_question,
+                                    "Vote text #WA #no",
                                     "123",
                                     "WA",
                                     1,
                                     0,
-                                    "jrgrafton")
+                                    "jrgrafton",
+                                    "https://pbs.twimg.com// \
+                                    profile_images//440698495// \
+                                    9929_128442162134_504357134_ \
+                                    2556732_5649977_n_bigger.jpg")
         assert result == False
 
         # Second valid user
         result = twitter_stream_listener.\
             add_vote_for_screenname(current_question,
+                                    "Vote text for user 2 #WA #no",
                                     "123",
                                     "WA",
                                     1,
                                     50,
-                                    "jrgrafton_test")
+                                    "jrgrafton_test",
+                                    "https://pbs.twimg.com// \
+                                    profile_images//440698495// \
+                                    9929_128442162134_504357134_ \
+                                    2556732_5649977_n_bigger.jpg")
         assert result == True
         users = User.get_all()
         assert len(users) == 2
         user = users[1]
         assert len(user.votes) == 1
         assert user.votes[0].question.get().key == current_question.key
+        assert user.votes[0].vote_text == "Vote text for user 2 #WA #no"
         assert user.votes[0].replyid == "123"
         assert user.votes[0].state_abbreviation == "WA"
         assert user.votes[0].party == 1
@@ -314,21 +366,26 @@ class TestView(TestBase):
         # Second vote for new question should work
         result = twitter_stream_listener.\
             add_vote_for_screenname(current_question,
+                                    "Vote second question text #WA #no",
                                     "124",
                                     "WA",
                                     1,
                                     10,
-                                    "jrgrafton")
+                                    "jrgrafton",
+                                    "https://pbs.twimg.com// \
+                                    profile_images//440698495// \
+                                    9929_128442162134_504357134_ \
+                                    2556732_5649977_n_bigger.jpg")
         assert result == True
         user = User.query_by_userid("jrgrafton").get()
         assert user != None
         assert len(user.votes) == 2
+        assert user.votes[1].vote_text == "Vote second question text #WA #no"
         assert user.votes[1].question.get().key == current_question.key
         assert user.votes[1].replyid == "124"
         assert user.votes[1].state_abbreviation == "WA"
         assert user.votes[1].party == 1
         assert user.votes[1].sway_points == 10
-
 
     def test_view_tasks_twitter_stream_listener_add_vote_for_question(self):
         load_fixture('tests/states.json', kind={'State': State})
@@ -623,7 +680,7 @@ class TestView(TestBase):
         )
 
         # So that we can determine if user had winning vote
-        State.update_state_scores(current_question.state_scores)
+        State.update_state_scores_for_completed_question(current_question)
 
         # Vote - loosing (party 0 has least votes for this question and state)
         original_sway_points = user.sway_points

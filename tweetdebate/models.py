@@ -1,5 +1,7 @@
 import datetime
 import logging
+import random
+
 from enum import Enum
 from google.appengine.ext import ndb
 
@@ -11,6 +13,7 @@ class Party(Enum):
 class State(ndb.Model):
     """Models an individual state's score"""
     state_abbreviation = ndb.StringProperty()
+    college_votes = ndb.IntegerProperty(indexed=False)
     party_score_votes = ndb.IntegerProperty(indexed=False, repeated=True)
     party_score_sway = ndb.IntegerProperty(indexed=False, repeated=True)
     last_winning_party = ndb.IntegerProperty(indexed=False, default=None)
@@ -34,8 +37,9 @@ class State(ndb.Model):
 
     # Updates state scores based on result of a question
     @classmethod
-    def update_state_scores(cls, question_state_scores):
+    def update_state_scores_for_completed_question(cls, question):
         # Loops over each state that was voted for in this question
+        question_state_scores = question.state_scores
         for question_state_score in question_state_scores:
             state = cls.query(cls.state_abbreviation == \
                     question_state_score.state_abbreviation).get()
@@ -45,13 +49,21 @@ class State(ndb.Model):
             total_scores.append(question_state_score.party_score_votes[1] + \
                               question_state_score.party_score_sway[1])
 
-            # Ties get no points
+            # Ties are randomly decided
+            if total_scores[0] == total_scores[0]:
+                random_party = random.randrange(0, 2)
+                question_state_score.party_score_votes[random_party] += 1
+                total_scores[random_party] += 1
+
+            # Reward based on winner
             if total_scores[0] > total_scores[1]:
-                state.party_score_votes[Party.republication] += 1
+                state.party_score_votes[0] += 1
                 state.last_winning_party = 0
+                question_state_score.last_winning_party = 0
             elif total_scores[1] > total_scores[0]:
                 state.party_score_votes[1] += 1
                 state.last_winning_party = 1
+                question_state_score.last_winning_party = 1
             
             # Always tally total sway for a state
             state.party_score_sway[0] += \
@@ -60,6 +72,9 @@ class State(ndb.Model):
                 question_state_score.party_score_sway[1]
 
             state.put()
+
+        # May have been updated if there was a tie breaker
+        question.put()
 
 class Question(ndb.Model):
     """Models questions"""
@@ -70,6 +85,12 @@ class Question(ndb.Model):
     start_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     end_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     state_scores = ndb.LocalStructuredProperty(State, repeated=True)
+    college_score = ndb.IntegerProperty(indexed=False, 
+                                        repeated=True,
+                                        default=None)
+    vote_score = ndb.IntegerProperty(indexed=False,
+                                     repeated=True,
+                                     default=None)
 
     @classmethod
     def get_current_question(cls):
@@ -89,9 +110,29 @@ class Question(ndb.Model):
         else:
             return None
 
+    @classmethod
+    def tally_college_and_vote_scores(cls, question):
+        college_score = [0] * 2
+        vote_score = [0] * 2
+
+        for state_score in question.state_scores:
+            # Aggregate sway and votes for overall score
+            vote_score[0] += state_score.party_score_votes[0]
+            vote_score[0] += state_score.party_score_sway[0]
+            vote_score[1] += state_score.party_score_votes[1]
+            vote_score[1] += state_score.party_score_sway[1]
+
+            college_score[state_score.last_winning_party] += \
+                state_score.college_votes
+
+        question.college_score = college_score
+        question.vote_score = vote_score
+        question.put()
+
 class Vote(ndb.Model):
     """Models an individual Vote - always associated with user"""
     question = ndb.KeyProperty(kind=Question)
+    vote_text = ndb.StringProperty(indexed=False)
     replyid = ndb.StringProperty(indexed=False)
     state_abbreviation = ndb.StringProperty(indexed=False)
     party = ndb.IntegerProperty(indexed=False)
@@ -106,6 +147,8 @@ class Vote(ndb.Model):
 class User(ndb.Model):
     """Models an individual User"""
     userid = ndb.StringProperty() #@TODO: change this to screen_name
+    profile_image_url = ndb.StringProperty(indexed=False)
+    avatar_url = ndb.StringProperty(indexed=False)
     sway_points = ndb.IntegerProperty(indexed=False, default=50)
     votes = ndb.StructuredProperty(Vote, indexed=False, repeated=True)
     last_retweet_id = ndb.StringProperty(indexed=False, default=None)
@@ -123,10 +166,11 @@ class User(ndb.Model):
         return cls.query(cls.userid==userid)
 
     @classmethod
-    def add_user_vote(cls, user, userid, vote):
+    def add_user_vote(cls, user, userid, profile_image_url, vote):
         if user is None:
             user = User(
                 userid = userid,
+                profile_image_url = profile_image_url,
                 votes = [vote],
                 # Can use sway points upon creation
                 sway_points = (User.get_starting_sway_points() - \

@@ -41,9 +41,9 @@ class Bootstrap(object):
         logging.info('load_states:')
         states = self.bootstrap_json["states"]
         for state in states:
-            state_abbreviation = state["state_abbreviation"]
             state = State(
-                state_abbreviation = state_abbreviation,
+                state_abbreviation = state["state_abbreviation"],
+                college_votes = int(state["college_votes"]),
                 party_score_votes = [0, 0],
                 party_score_sway = [0, 0]
             )

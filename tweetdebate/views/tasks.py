@@ -42,10 +42,14 @@ def twitter_post_status():
             except TweepError as e:
                 pass  #TODO: do something - message to monitoring?
 
-        # Update overall state scores if this isn't the first question
         if current_question is not None:
-            State.update_state_scores(current_question.state_scores)
+            # Update overall state scores
+            State.update_state_scores_for_completed_question(current_question)
+            
+            # Update overall question scores
+            Question.tally_college_and_vote_scores(current_question)
 
+            # Update end of question user sway scores
             users = User.get_all()
             for user in users:
                 __attribute_sway_points_for_user(current_question, user)

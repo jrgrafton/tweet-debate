@@ -12,12 +12,14 @@
             {
                 "__kind__": "State",
                 "state_abbreviation" : "CA",
+                "college_votes" : 55,
                 "party_score_votes": [500, 10],
                 "party_score_sway": [20, 30]
             },
             {
                 "__kind__": "State",
                 "state_abbreviation" : "WA",
+                "college_votes" : 12,
                 "party_score_votes": [70, 140],
                 "party_score_sway": [50, 100]
             }
