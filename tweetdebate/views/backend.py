@@ -67,6 +67,10 @@ class TwitterStreamListener(StreamListener):
         logging.info("parse_data: %s" % str(data))
         current_question = Question.get_current_question()
 
+        # Avoid race condition triggered by first question post
+        if current_question == None:
+            return 
+
         # Retweeted poll
         if "event" in data and data["event"] == "quoted_tweet":
             target_id = str(data["target_object"]["quoted_status_id"])

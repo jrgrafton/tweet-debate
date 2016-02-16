@@ -15,6 +15,5 @@ app.register_blueprint(errors.mod)
 # Insert default config to Database
 @app.before_first_request
 def before_first_request():
-    bootstrap = Bootstrap()
+    bootstrap = Bootstrap(app)
     bootstrap.activate()
-        

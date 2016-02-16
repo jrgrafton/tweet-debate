@@ -2,17 +2,22 @@ import datetime
 import json
 import os
 import logging
+import time
+
+from google.appengine.ext import ndb
 
 from tweetdebate.models import Question
 from tweetdebate.models import State
+from tweetdebate.views import tasks
 
 class Bootstrap(object):
     """Loads initial data into DB"""
     questions = None
     bootstrap_json = None
 
-    def __init__(self):
+    def __init__(self, app):
         self.questions = Question.query().get()
+        self.app = app
 
     def activate(self):        
         if  self.questions is None:
@@ -21,6 +26,13 @@ class Bootstrap(object):
             self.bootstrap_json = json.load(data_file)
             self.load_questions()
             self.load_states()
+
+            # Clear cache so newly posted question can be picked up
+            self.app.test_client().get('/tasks/twitter_post_status' \
+                '?question_cadence_minutes=1&post_to_twitter=True')
+            # Time to post question
+            time.sleep(1)
+            ndb.get_context().clear_cache()
     
     def load_questions(self):
         # Load questions

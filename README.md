@@ -29,7 +29,7 @@ See the README file for directions. You'll need python 2.7 and [pip 1.4 or later
 5. Run this project locally from the command line:
 
    ```
-   dev_appserver.py app.yaml twitter_backend.yaml
+   ./main.sh
    ```
 
 Visit the application [http://localhost:8080](http://localhost:8080)
