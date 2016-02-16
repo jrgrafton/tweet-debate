@@ -19,6 +19,10 @@ class State(ndb.Model):
     last_winning_party = ndb.IntegerProperty(indexed=False, default=None)
 
     @classmethod
+    def get_all(cls):
+        return cls.query().order(cls.state_abbreviation).fetch()
+
+    @classmethod
     def get_state_by_abbreviation(cls, state_abbreviation):
         state_abbreviation = state_abbreviation.upper()
         return cls.query(cls.state_abbreviation == state_abbreviation).get()

@@ -3,6 +3,7 @@ import pytz
 
 from flask import Blueprint, render_template
 from tweetdebate.models import Question
+from tweetdebate.models import State
 from tweetdebate.models import Vote
 
 mod = Blueprint('index', __name__)
@@ -26,5 +27,6 @@ def index():
     current_question.end_time = current_question.end_time + timedelta(hours=6)
 
     return render_template('index.html',
-        current_question = current_question
+        current_question = current_question,
+        states = State.get_all()
     )

@@ -13,6 +13,29 @@
       </p>
       <h1>Votes</h1>
       <p>{{ current_question.vote_count }}</p>
+      <h1>State scores (current question)</h1>
+      <ul>
+        {% for state_score in current_question.state_scores %}
+          <li>
+            <b>abbreviation:</b> {{ state_score.state_abbreviation }}, 
+            <b>college votes:</b> {{ state_score.college_votes }}, 
+            <b>votes-r:</b> {{ state_score.party_score_votes[0] }},
+            <b>sway-r:</b> {{ state_score.party_score_sway[0] }},
+            <b>votes-d:</b> {{ state_score.party_score_votes[1] }},
+            <b>sway-d:</b> {{ state_score.party_score_sway[1] }}
+          </li>
+        {% endfor %}
+      </ul>
+      <h1>State scores (historical)</h1>
+      <ul>
+        {% for state in states %}
+          <li>
+            <b>abbreviation:</b> {{ state.state_abbreviation }}, 
+            <b>votes-r:</b> {{ state.party_score_votes[0] }},
+            <b>votes-d:</b> {{ state.party_score_votes[1] }}
+          </li>
+        {% endfor %}
+      <ul>
     </div>
   </body>
 </html>
