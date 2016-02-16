@@ -7,6 +7,7 @@
 Flask==0.10
 flask-api
 tweepy==3.5.0
+enum34
+pytz
 unittest2
 appengine-fixture-loader==0.1.7
-enum34

@@ -4,21 +4,15 @@
     <title>Tweet Debate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style type="text/css">
-      .container {
-        max-width: 500px;
-        padding-top: 100px;
-      }
-    </style>
   </head>
   <body>
     <div class="container">
-      <p>Inserted: {{insert_key}}</p>
-      <h1>Votes ({{ votes|length }})</h1>
-      <ul>
-        {% for vote in votes %}
-          <li>vote: {{ vote }} </li>
-        {% endfor %}
-      </ul>
+      <h1>Question</h1>
+      <p><b>{{ current_question.question_text }}</b> -- 
+        <span>{{ current_question.end_time }} PST</span>
+      </p>
+      <h1>Votes</h1>
+      <p>{{ current_question.vote_count }}</p>
+    </div>
   </body>
 </html>

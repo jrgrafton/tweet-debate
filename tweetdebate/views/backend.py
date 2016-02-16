@@ -203,6 +203,9 @@ class TwitterStreamListener(StreamListener):
 
         states[-1].party_score_votes[party] += 1
         states[-1].party_score_sway[party] += sway_points
+        
+        # Increment question vote count
+        question.vote_count += 1
         question.put()
 
     def get_college_votes_for_state_abbreviation(self, state_abbreviation):

@@ -84,6 +84,7 @@ class Question(ndb.Model):
     party = ndb.IntegerProperty(indexed=False)
     start_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     end_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
+    vote_count = ndb.IntegerProperty(indexed=False, default=0)
     state_scores = ndb.LocalStructuredProperty(State, repeated=True)
     college_score = ndb.IntegerProperty(indexed=False, 
                                         repeated=True,

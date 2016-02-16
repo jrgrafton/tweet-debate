@@ -12,6 +12,9 @@ runtime: python27
 api_version: 1
 threadsafe: yes
 
+automatic_scaling:
+  min_idle_instances: 1
+
 # Handlers define how to route requests to your application.
 handlers:
 
@@ -27,6 +30,9 @@ handlers:
 - url: /tasks/.*
   script: tweetdebate.main.app
   login: admin # Tasks can only be excuted by cron
+
+- url: /stats.*
+  script: google.appengine.ext.appstats.ui.app
 
 - url: .*  # All routes not matched go to main apps
   script: tweetdebate.main.app
