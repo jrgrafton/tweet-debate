@@ -84,8 +84,11 @@ def __attribute_sway_points_for_user(current_question, user):
         # Voted for winning party
         state = State.get_state_by_abbreviation(\
                     user.votes[-1].state_abbreviation)
+        last_winning_party = 1 if current_question.college_score[1] > \
+                             current_question.college_score[0] else 0
 
-        if user.votes[-1].party == state.last_winning_party:
+        # Voted on party that won last question
+        if user.votes[-1].party == last_winning_party:
             user.votes[-1].winning_vote = True
             user.sway_points += sway_points["submit_winning_answer"]
              # Voted for winning party twice in a row

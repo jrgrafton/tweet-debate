@@ -660,7 +660,7 @@ class TestView(TestBase):
             question = current_question.key,
             replyid = "123",
             state_abbreviation = "CA",
-            party = 0,
+            party = 1,
             sway_points = 20,
             winning_vote = True
         )
@@ -681,20 +681,21 @@ class TestView(TestBase):
 
         # So that we can determine if user had winning vote
         State.update_state_scores_for_completed_question(current_question)
+        Question.tally_college_and_vote_scores(current_question)
 
-        # Vote - loosing (party 0 has least votes for this question and state)
+        # Vote - loosing (party 0 has least electoral_votes for this question)
         original_sway_points = user.sway_points
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
-
         assert user.sway_points == original_sway_points + \
                                    sway_points_tasks["submit_answer"]
 
-        # Vote - winning (party 1 has most votes for this question and state)
+        # Vote - winning (party 1 has most electoral_votes for this question)
         original_sway_points = user.sway_points
         vote_current.party = 1
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
+
         assert user.sway_points == original_sway_points + \
                                   sway_points_tasks["submit_answer"] + \
                                   sway_points_tasks["submit_winning_answer"] + \
