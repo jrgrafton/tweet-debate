@@ -92,6 +92,7 @@ class Question(ndb.Model):
     end_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     vote_count = ndb.IntegerProperty(indexed=False, default=0)
     state_scores = ndb.LocalStructuredProperty(State, repeated=True)
+    last_updated = ndb.DateTimeProperty(auto_now_add=True, default=None)
 
     # Tallied at the end of each question
     college_score = ndb.IntegerProperty(indexed=False, 
@@ -101,6 +102,9 @@ class Question(ndb.Model):
     vote_score = ndb.IntegerProperty(indexed=False,
                                      repeated=True,
                                      default=None)
+    # For optimised API requests
+    def _pre_put_hook(self):
+        self.last_updated = datetime.now()
 
     @classmethod
     def get_current_question(cls):

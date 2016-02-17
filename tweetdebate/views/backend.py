@@ -35,7 +35,7 @@ def start_twitter_stream():
         tb = traceback.format_exc()
         logging.info("except: %s %s" % (str(e), tb))    
         # TODO: email admins on exception
-        start_twitter_stream()
+        # start_twitter_stream()
 
 def stop_twitter_stream():
     twitter_stream.stop()

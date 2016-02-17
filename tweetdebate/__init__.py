@@ -2,6 +2,7 @@ from flask import Flask
 import logging
 import json
 import os
+
 from tweetdebate.views import index
 from tweetdebate.views import tasks
 from tweetdebate.views import errors
