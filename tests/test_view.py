@@ -685,6 +685,9 @@ class TestView(TestBase):
 
         # Vote - loosing (party 0 has least electoral_votes for this question)
         original_sway_points = user.sway_points
+        #print current_question.college_score[0]
+        #print current_question.college_score[1]
+        #print original_sway_points
         tasks.__dict__\
             ["__attribute_sway_points_for_user"](current_question, user)
         assert user.sway_points == original_sway_points + \

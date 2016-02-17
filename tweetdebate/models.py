@@ -56,7 +56,7 @@ class State(ndb.Model):
                               question_state_score.party_score_sway[1])
 
             # Ties are randomly decided
-            if total_scores[0] == total_scores[0]:
+            if total_scores[0] == total_scores[1]:
                 random_party = random.randrange(0, 2)
                 question_state_score.party_score_votes[random_party] += 1
                 total_scores[random_party] += 1
@@ -138,6 +138,11 @@ class Question(ndb.Model):
 
             college_score[state_score.last_winning_party] += \
                 state_score.college_votes
+
+        # Ties are randomly decided
+        if college_score[0] == college_score[1]:
+            random_party = random.randrange(0, 2)
+            college_score[random_party] += 1
 
         question.college_score = college_score
         question.vote_score = vote_score
