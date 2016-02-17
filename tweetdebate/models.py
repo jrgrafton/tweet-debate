@@ -1,9 +1,11 @@
-import datetime
+from datetime import datetime, date, time
+import json
 import logging
 import random
 
 from enum import Enum
 from google.appengine.ext import ndb
+from google.appengine.ext import db
 
 # @TODO: reference ENUM values rather than integers
 class Party(Enum):
@@ -90,9 +92,12 @@ class Question(ndb.Model):
     end_time = ndb.DateTimeProperty(auto_now_add=False, default=None)
     vote_count = ndb.IntegerProperty(indexed=False, default=0)
     state_scores = ndb.LocalStructuredProperty(State, repeated=True)
+
+    # Tallied at the end of each question
     college_score = ndb.IntegerProperty(indexed=False, 
                                         repeated=True,
                                         default=None)
+    # Tallied at the end of each question
     vote_score = ndb.IntegerProperty(indexed=False,
                                      repeated=True,
                                      default=None)
@@ -186,3 +191,15 @@ class User(ndb.Model):
             user.votes.append(vote)
             user.sway_points -= vote.sway_points
             user.put()
+
+class JSONEncoder(json.JSONEncoder):
+
+    def default(self, o):
+        # If this is a key, you might want to grab the actual model.
+        if isinstance(o, db.Key):
+            o = db.get(o)
+
+        if isinstance(o, db.Model):
+            return db.to_dict(o)
+        elif isinstance(o, (datetime, date, time)):
+            return str(o)  # Or whatever other date format you're OK with...

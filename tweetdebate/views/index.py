@@ -1,7 +1,9 @@
 from datetime import timedelta
+import json
 import pytz
 
 from flask import Blueprint, render_template
+from tweetdebate.models import JSONEncoder
 from tweetdebate.models import Question
 from tweetdebate.models import State
 from tweetdebate.models import Vote
@@ -13,6 +15,7 @@ mod = Blueprint('index', __name__)
 def home():
     return render_template('home.html')
 
+# @TODO move this to REST API https://cloud.google.com/appengine/docs/python/endpoints/create_api
 @mod.route('/index')
 def index():
     current_question = Question.get_current_question()
@@ -27,6 +30,6 @@ def index():
     current_question.end_time = current_question.end_time + timedelta(hours=6)
 
     return render_template('index.html',
-        current_question = current_question,
-        states = State.get_all()
+        current_question = JSONEncoder().encode(current_question.to_dict())
+        #states = json.dumps(State.get_all())
     )
