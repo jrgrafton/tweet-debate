@@ -36,9 +36,9 @@ handlers:
 - url: /stats.*
   script: google.appengine.ext.appstats.ui.app
 
-# API's
-- url: /_ah/spi/.*
-  script: tweetdebate.apis.hello_world.APPLICATION
+# APIs
+- url: /api/.*  # All routes not matched go to main apps
+  script: tweetdebate.main.app
 
 # Views
 - url: .*  # All routes not matched go to main apps
@@ -52,11 +52,7 @@ handlers:
 # project directory, either as a git submodule or as a plain subdirectory.
 # TODO: List any other App Engine SDK libs you may need here.
 libraries:
-- name: endpoints
-  version: latest
 - name: ssl
-  version: latest
-- name: pycrypto
   version: latest
 
 env_variables:
