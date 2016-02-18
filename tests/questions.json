@@ -59,7 +59,7 @@
                 "__kind__": "State",
                 "state_abbreviation" : "TX",
                 "college_votes" : 38,
-                "party_score_votes": [70, 80],
+                "party_score_votes": [70, 81],
                 "party_score_sway": [80, 70]
             }
         ]

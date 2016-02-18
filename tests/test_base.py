@@ -17,6 +17,7 @@ class TestBase(unittest.TestCase):
 
         # Setups app engine test bed. See: http://goo.gl/eQWKdr
         self.testbed = testbed.Testbed()
+        self.testbed.setup_env(current_version_id='testbed.version')
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_user_stub()

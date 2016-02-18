@@ -129,6 +129,7 @@ class Question(ndb.Model):
         college_score = [0] * 2
         vote_score = [0] * 2
 
+        # Count college votes based on all states
         for state_score in question.state_scores:
             # Aggregate sway and votes for overall score
             vote_score[0] += state_score.party_score_votes[0]
