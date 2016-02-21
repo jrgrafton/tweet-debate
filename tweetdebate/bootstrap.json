@@ -513,8 +513,296 @@
         },
         {
             "image": null,
-            "question_text": "democratic quote",
-            "party": 0,
+            "question_text": "\"We must invest in our country and the potential of our kids to make college a debt free option for all families\" #yes #no #FreeCollege",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"The middle class of this country for the last 40 years has been disappearing\" We must solve that. #yes #no #BringBackMiddleClass",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Climate change is real, it is caused by human activity\" #yes #no #BirdEggsAreBoiling",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Instead of building jails and providing incarceration, we should educate and provide jobs for our kids\" #yes or #no #MoreNestsLessCages",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Take back government from a handful of billionaires, create a vibrant democracy we know we can and should have\" #yes or #no #RichinPigeon",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"At the center of my campaign is how we're going to raise wages\" As it should be. #yes or #no #RaiseTheWage",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Right now, the wealthy pay too little and the middle class pays too much\" #yes or #no #DrTooLittle",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I believe in equal pay for women, I also believe it's about time we had paid family leave for American families\" #yes #no #PaidBrooding",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"There's too much inequality - racial divides, discrimination against the LGBT community\" We need solutions #yes or #no #AllBirdsAreEqual",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"It is immoral and wrong that the top one-tenth of 1% in this country own as much wealth as the bottom 90 percent\" #yes #no #WealthStreet",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Every major country provides health care to all people as a right, except the USA\" We should do the same. #yes or #no for #BirdCare",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I am not part of the casino capitalist process by which so few have so much and so many have so little\" With me? #yes or #no #DemSocialism",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I believe in a society where all people do well. Not just a handful of billionaires.\" Do you too? #yes or #no #Birdionaires",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"It's our job to rein in the excesses of capitalism so that it doesn't run amok\" Agree? #yes or #no #FlutteringCapitalism",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We would be making a mistake to turn our backs on what built the greatest middle class in the history\" Correct? #yes or #no #SingCapitalism",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We have to make sure that every family in this country gets a fair shake\" Do you agree? #yes or #no #FairShakeItOff",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I have strongly supported instant background checks, doing away with this terrible gun show loophole\" Right? #yes or #no #HuntNoBird",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"There are thousands who are suicidal, homicidal, but can't get the healthcare that they need\" We need to help. #yes or #no #BirdCare ",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"It's time the entire country stood up against the NRA\" We need proper gun control. #yes or #no #BirdsGetShot",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We have to stand up to Putin's bullying, and specifically in Syria, it is important\" #yes or #no #CawingPutin",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We should be supportive, but I do not support American ground troops in Syria\" #yes or #no #NoEaglesInSyria",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We failed to invest in the human intelligence that allows us to make better decisions in Libya and Syria\" #yes or #no #BirdIntelligence",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I happen to believe that war should be the last resort that we have got to exercise diplomacy\" #yes or #no #LastResort",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"The greatest security threat is the chaos in the Middle East, and it all started with the Iraq invasion\" #yes or #no #IraqFlutter",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Climate change, of course, is one of our biggest threats\" #yes or #no #AlwaysSunnyChristmas",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"The planet that we're leaving our kids and our grandchildren may not be habitable. That is a major crisis\" #yes or #no #InhabitableHome",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"The people want to know whether we're going to have a democracy or an oligarchy as a result of Citizens Union\" #yes or #no #WhosUnion",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We need to make American 100 percent clean electric by 2050\" #yes or #no #clearSkies",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Black lives matter\" #yes or #no #BlackLivesMatter or #AllLivesMatter",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We need to combat institutional racism from top to bottom, we need major reforms in a broken justice system\" #yes or #no #ReformJustice",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Raise the minimum wage to $15 an hour; pay equity for women workers\" Should we? #yes or #no #EqualPay #ProperPay",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"The economy does better when you have a Democrat in the White House\" Right? #yes #no #DemocratInTheHouse",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"The greed, recklessness, and illegal behavior of Wall Street, destroyed this economy and the lives of millions\" #yes or #no #StopWallStreet",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I want Wall Street to help kids go to colleges and universities, free with a Wall Street speculation tax\" With me? #yes or #no #FreeCollege",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"Donald Trump and his billionaire friends under my policies are going to pay a lot more in taxes\" With me? #yes or #no #TakeTrumpDown",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I want to enhance the benefits for the poorest recipients of Social Security\" As we should. #yes or #no #SSForThePoor",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"When you have 11 million undocumented people in this country, we need comprehensive immigration reform\" #yes or #no #MigrationReform",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We always have to keep the balance of civil liberties, privacy and security\" #yes or #no #AllAboutTheBalance",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I'd shut down what exists right now, that virtually every telephone call in this country ends up in a file at the NSA\" #yes or #no",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I don't think Snowden should be brought home without facing the music\" #yes or #no #HoneInOnSnowden",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I think what Snowden did in educating us should be taken into consideration\" #yes or #no #ProfessorSnowden",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I think being the first woman president would be quite a change from the presidents we've had up until this point\" #yes or #no #FemaleEagle",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I think being the first woman president would be quite a change from the presidents we've had up until this point\" #yes or #no #FemaleEagle",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We need to have one of the larger voter turnouts in the world, not one of the lowest\" #yes or #no #FlockBirdsFlock",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"That is an international embarrassment that we do not provide paid family and medical leave\" We should. #yes or #no #PaidLeave",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We would be a stronger nation economically if we had paid family leave\" #yes or #no #PaidLeaveMakesUsStronger",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I am seeing in this country too many lives being destroyed for non-violent offenses\" Legalize marijuana. #yes or #no #Dude",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"I would vote yes for legalizing marijuana\" Agree? #yes or #no #AlreadySmoking",
+            "party": 1,
+            "comment": "Origin of the quote"
+        },
+        {
+            "image": null,
+            "question_text": "\"We should not be the only major country on Earth that does not guarantee health care to all of our people\" #yes or #no #CareForAll",
+            "party": 1,
             "comment": "Origin of the quote"
         }
     ],
