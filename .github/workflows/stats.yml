@@ -9,7 +9,7 @@ jobs:
       - name: Run pull request stats
         uses: flowwer-dev/pull-request-stats@master
         with:
-          token: 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
+          token: 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
           period: 9999
           charts: true
           disable-links: false
