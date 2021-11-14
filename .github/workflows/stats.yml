@@ -1,0 +1,17 @@
+name: Pull Request Stats
+
+on: pull_request
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run pull request stats
+        uses: flowwer-dev/pull-request-stats@master
+        with:
+          token: ${{ secrets.PR_STATS }}
+          period: 9999
+          charts: true
+          disable-links: false
+          sort-by: 'COMMENTS'
+          limit: 10
